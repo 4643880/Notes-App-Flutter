@@ -3,7 +3,10 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:mynotes/firebase_options.dart';
 import 'package:mynotes/views/login_view.dart';
+import 'package:mynotes/views/notes_view.dart';
 import 'package:mynotes/views/verify_email_view.dart';
+
+
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -27,32 +30,35 @@ class _HomePageState extends State<HomePage> {
               final user = FirebaseAuth.instance.currentUser;
               if (user != null) {
                 if (user.emailVerified) {
-                  return const Center(child: Text("Your Email is verified"));
+                  return const NotesView();
                 } else {
                   return const VerifyEmailView();
                 }
               } else {
                 return const LoginView();
               }
-              default:
-                return const Center(child: CircularProgressIndicator(),);
-              // print("------------------------");
-              // print(FirebaseAuth.instance.currentUser);
-              // final user = FirebaseAuth.instance.currentUser;
-              // final checkVerification = user?.emailVerified ?? false;
-              // if (checkVerification == true) {
-              //   // print("Your email is verified");
-              //   return const Text("Done");
-              // } else {
-              //   // print("Your email is not verified");
-              //   return const VerifyEmailView();
-              // }
-              //   return const LoginView();
-              // default:
-              //   return const Center(child: CircularProgressIndicator());
+            default:
+              return const Center(
+                child: CircularProgressIndicator(),
+              );
+            // print("------------------------");
+            // print(FirebaseAuth.instance.currentUser);
+            // final user = FirebaseAuth.instance.currentUser;
+            // final checkVerification = user?.emailVerified ?? false;
+            // if (checkVerification == true) {
+            //   // print("Your email is verified");
+            //   return const Text("Done");
+            // } else {
+            //   // print("Your email is not verified");
+            //   return const VerifyEmailView();
+            // }
+            //   return const LoginView();
+            // default:
+            //   return const Center(child: CircularProgressIndicator());
           }
         },
       ),
     );
   }
 }
+
