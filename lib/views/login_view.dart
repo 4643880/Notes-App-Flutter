@@ -73,9 +73,18 @@ class _LoginViewState extends State<LoginView> {
                 } on FirebaseAuthException catch (e) {
                   if (e.code == 'user-not-found') {
                     devtools.log('No user found for that email.');
+                    await showErrorDialog(context, "User Not Found", "No user found for that email. Please try again.");
                   } else if (e.code == 'wrong-password') {
                     devtools.log('Wrong password provided for that user.');
+                    await showErrorDialog(context, "Wrong Password", "Wrong password provided for that user. Please try again.");
+                  }else{
+                    devtools.log(e.code.toString());
+                    await showErrorDialog(context, "Something Went Wrong", "Error:  ${e.code}");
                   }
+                } catch (e){
+                  devtools.log(e.toString());
+                    await showErrorDialog(context, "Something Went Wrong", "Error:  $e");
+
                 }
                 // print(credential);
               },
@@ -87,4 +96,17 @@ class _LoginViewState extends State<LoginView> {
       ),
     );
   }
+}
+
+
+
+
+Future<void> showErrorDialog(BuildContext context,String myTitle, String myDesc, ){
+  return showDialog(context: context, builder: (BuildContext context){
+    return AlertDialog(title: Text(myTitle), content: Text(myDesc), actions: [
+      TextButton(onPressed: (){
+        Navigator.of(context).pop();
+      }, child: const Text("Ok")),
+    ],);
+  }); 
 }
