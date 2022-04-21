@@ -2,6 +2,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'dart:developer' as devtools show log;
 
+import 'package:mynotes/constants/routes.dart';
+
 
 class LoginView extends StatefulWidget {
   const LoginView({Key? key}) : super(key: key);
@@ -62,9 +64,9 @@ class _LoginViewState extends State<LoginView> {
                   final user = FirebaseAuth.instance.currentUser;
                   final checkNull = user?.emailVerified;     
                   if(checkNull == true){
-                    Navigator.pushNamedAndRemoveUntil(context, "/notes/", (route) => false);
+                    Navigator.pushNamedAndRemoveUntil(context, notesRoute, (route) => false);
                   }else {
-                    Navigator.pushNamedAndRemoveUntil(context, "/email/", (route) => false);
+                    Navigator.pushNamedAndRemoveUntil(context, emailVerifyRoute, (route) => false);
                   }
                   
                   devtools.log(credential.toString());        
@@ -79,7 +81,7 @@ class _LoginViewState extends State<LoginView> {
               },
               child: const Text("Login")),
           TextButton(onPressed: (){
-            Navigator.of(context).pushNamed("/register/");
+            Navigator.of(context).pushNamed(registerRoute);
           }, child: const Text("Create New Account")),
         ],
       ),
