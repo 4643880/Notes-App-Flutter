@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'dart:developer' as devtools show log;
 
 import 'package:mynotes/constants/routes.dart';
+import 'package:mynotes/utilities/show_error_dialog.dart';
 import 'package:mynotes/views/login_view.dart';
 
 
@@ -85,6 +86,9 @@ class _RegisterViewState extends State<RegisterView> {
                     } else if (e.code == "invalid-email") {
                       devtools.log("Invalid Email Address");
                       await showErrorDialog(context, "Invalid Email Address", "Please Enter Correct Email Address it's Invalid");
+                    } else{
+                      devtools.log(e.toString());
+                      await showErrorDialog(context, "Something Went Wrong", "Error ${e.toString()}");
                     }
                   } catch (e) {
                     devtools.log(e.toString());
