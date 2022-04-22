@@ -1,10 +1,10 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'dart:developer' as devtools show log;
-
 import 'package:mynotes/constants/routes.dart';
+import 'package:mynotes/services/auth/auth_exceptions.dart';
+import 'package:mynotes/services/auth/auth_service.dart';
 import 'package:mynotes/utilities/show_error_dialog.dart';
-import 'package:mynotes/views/login_view.dart';
+
 
 
 class RegisterView extends StatefulWidget {
@@ -62,38 +62,43 @@ class _RegisterViewState extends State<RegisterView> {
                   final password = _password.text;
                   try {
 
-                    final credential = await FirebaseAuth.instance
-                        .createUserWithEmailAndPassword(
-                      email: email,
-                      password: password,
-                    );
-
-                    final user = FirebaseAuth.instance.currentUser;
-                    user?.sendEmailVerification();
-
+                    await AuthService.firebase().createUser(email: email, password: password);
+                    
+                    await AuthService.firebase().sendEmailVerification();
+                    
                     await showErrorDialog(context, "Verify Your Email", "We have sent verification email.");
 
                     Navigator.pushNamed(context, emailVerifyRoute);   
 
-                  } on FirebaseAuthException catch (e) {
-                    devtools.log(e.toString());
-                    if (e.code == 'weak-password') {
-                      devtools.log('The password provided is too weak.');
-                      await showErrorDialog(context, "Weak Password", "The password provided is too weak.");
-                    } else if (e.code == 'email-already-in-use') {
-                      devtools.log('The account already exists for that email.');
-                      await showErrorDialog(context, "Email Already in Use", "The account already exists for that email.");
-                    } else if (e.code == "invalid-email") {
-                      devtools.log("Invalid Email Address");
-                      await showErrorDialog(context, "Invalid Email Address", "Please Enter Correct Email Address it's Invalid");
-                    } else{
-                      devtools.log(e.toString());
-                      await showErrorDialog(context, "Something Went Wrong", "Error ${e.toString()}");
-                    }
-                  } catch (e) {
-                    devtools.log(e.toString());
-                    await showErrorDialog(context, "Something Went Wrong", "Error ${e.toString()}");
+                  } on WeakPasswordAuthException{
+                    await showErrorDialog(context, "Weak Password", "The password provided is too weak.");
+                  } on EmailAlreadyInUseAuthException{
+                    await showErrorDialog(context, "Email Already in Use", "The account already exists for that email.");
+                  } on InvalidEmailAuthException{
+                    await showErrorDialog(context, "Invalid Email Address", "Please Enter Correct Email Address it's Invalid");
+                  } on GenericAuthException{
+                    await showErrorDialog(context, "Something Went Wrong", "Error: Failed to register.");
                   }
+                  
+                  //  on FirebaseAuthException catch (e) {
+                  //   devtools.log(e.toString());
+                  //   if (e.code == 'weak-password') {
+                  //     devtools.log('The password provided is too weak.');
+                  //     await showErrorDialog(context, "Weak Password", "The password provided is too weak.");
+                  //   } else if (e.code == 'email-already-in-use') {
+                  //     devtools.log('The account already exists for that email.');
+                  //     await showErrorDialog(context, "Email Already in Use", "The account already exists for that email.");
+                  //   } else if (e.code == "invalid-email") {
+                  //     devtools.log("Invalid Email Address");
+                  //     await showErrorDialog(context, "Invalid Email Address", "Please Enter Correct Email Address it's Invalid");
+                  //   } else{
+                  //     devtools.log(e.toString());
+                  //     await showErrorDialog(context, "Something Went Wrong", "Error ${e.toString()}");
+                  //   }
+                  // } catch (e) {
+                  //   devtools.log(e.toString());
+                  //   await showErrorDialog(context, "Something Went Wrong", "Error ${e.toString()}");
+                  // }
                 },
                 child: const Text("Sign Up")),
             // TextButton(
