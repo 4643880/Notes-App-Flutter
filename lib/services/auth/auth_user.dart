@@ -4,12 +4,11 @@ import 'package:firebase_auth/firebase_auth.dart' show User;
 import 'package:flutter/cupertino.dart';
 
 @immutable
-class AuthUser{
+class AuthUserVerification {
   final bool isEmailVerified;
-  const AuthUser({required this.isEmailVerified});
+  const AuthUserVerification({required this.isEmailVerified});
 
-  factory AuthUser.fromFirebase({required User user}) {
-    return AuthUser(isEmailVerified: user.emailVerified);
+  factory AuthUserVerification.fromFirebase({required User user}) {
+    return AuthUserVerification(isEmailVerified: user.emailVerified);
   }
-
 }

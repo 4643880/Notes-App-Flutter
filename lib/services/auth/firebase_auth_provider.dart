@@ -1,10 +1,8 @@
-
 import 'package:firebase_core/firebase_core.dart';
 import 'package:mynotes/firebase_options.dart';
 import 'package:mynotes/services/auth/auth_user.dart';
 import 'package:mynotes/services/auth/auth_provider.dart';
 import 'package:mynotes/services/auth/auth_exceptions.dart';
-
 import 'package:firebase_auth/firebase_auth.dart'
     show FirebaseAuth, FirebaseAuthException;
 
@@ -17,21 +15,20 @@ class FirebaseAuthProvider implements AuthProvider {
   }
 
   @override
-  Future<AuthUser> createUser({
+  Future<AuthUserVerification> createUser({
     required email,
     required password,
   }) async {
     try {
-      final Credential =
-          await FirebaseAuth.instance.createUserWithEmailAndPassword(
+      await FirebaseAuth.instance.createUserWithEmailAndPassword(
         email: email,
         password: password,
       );
 
-      final user = currentUser;
+      final user = FirebaseAuth.instance.currentUser;
 
       if (user != null) {
-        return user;
+        return AuthUserVerification.fromFirebase(user: user);
       } else {
         throw UserNotLogedInAuthException();
       }
@@ -51,30 +48,29 @@ class FirebaseAuthProvider implements AuthProvider {
   }
 
   @override
-  AuthUser? get currentUser {
+  AuthUserVerification? get currentUser {
     final user = FirebaseAuth.instance.currentUser;
-    // AuthUser.fromFirebase(user: user!);
     if (user != null) {
-      return AuthUser.fromFirebase(user: user);
+      return AuthUserVerification.fromFirebase(user: user);
     } else {
       return null;
     }
   }
 
   @override
-  Future<AuthUser> logIn({
+  Future<AuthUserVerification> logIn({
     required email,
     required password,
   }) async {
     try {
-      final credential = await FirebaseAuth.instance.signInWithEmailAndPassword(
+      await FirebaseAuth.instance.signInWithEmailAndPassword(
         email: email,
         password: password,
       );
 
-      final user = currentUser;
+      final user = FirebaseAuth.instance.currentUser;
       if (user != null) {
-        return user;
+        return AuthUserVerification.fromFirebase(user: user);
       } else {
         throw UserNotLogedInAuthException();
       }
