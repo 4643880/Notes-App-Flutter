@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:mynotes/services/crud/crud_exceptions.dart';
 import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
@@ -23,6 +24,7 @@ class NotesSevice {
       // Creating Tables if not exists
       await openDB.execute(createUserTable);
       await openDB.execute(createNoteTable);
+      await _cacheNotes();
     } catch (e) {
       throw UnableToGetDocumentDirectoryException();
     }
@@ -38,6 +40,7 @@ class NotesSevice {
     }
   }
 
+  // Checking that is Database open or not
   Database? _getDatabaseOrThrow() {
     if (_db == null) {
       throw DatabaseIsNotOpenException();
@@ -111,12 +114,18 @@ class NotesSevice {
       isSyncWithCloudColumn: 1,
     });
 
-    return NotesDatabase(
+    final note = NotesDatabase(
       noteId: noteId,
       text: text,
       userId: owner.userId,
       isSyncWithCloud: 1,
     );
+
+    // Adding new note
+    _notes.add(note);
+    _notesStreamController.add(note);
+
+    return note;
   }
 
   Future deleteNote({required int noteId}) async {
@@ -128,6 +137,9 @@ class NotesSevice {
     );
     if (deletedCount == 0) {
       throw CouldNotDeleteNoteException();
+    } else {
+      _notes.removeWhere((note) => note.noteId == noteId);
+      _notesStreamController.add(_notes);
     }
   }
 
@@ -137,6 +149,8 @@ class NotesSevice {
     if (deletedCount != 1) {
       throw CouldNotDeleteNoteException();
     }
+    _notes = [];
+    _notesStreamController.add(_notes);
     return deletedCount;
   }
 
@@ -151,11 +165,14 @@ class NotesSevice {
     if (result!.isEmpty) {
       throw CouldNotFindNoteException();
     } else {
-      return NotesDatabase.fromRow(map: result.first);
+      final note = NotesDatabase.fromRow(map: result.first);
+      _notes.add(note);
+      _notesStreamController.add(_notes);
+      return note;
     }
   }
 
-  Future getAllNotes() async {
+  Future<Iterable<NotesDatabase>?> getAllNotes() async {
     final db = _getDatabaseOrThrow();
     final result = await db?.query(noteTable);
 
@@ -187,10 +204,37 @@ class NotesSevice {
     if (updatedCount != 1) {
       throw CouldNotUpdateNoteException();
     } else {
-      return getNote(noteId: note.noteId);
+      final updatedNote = await getNote(noteId: note.noteId);
+      _notes.add(updatedNote); // Adding in List
+      _notesStreamController.add(_notes); // Updating Stream
+      return updatedNote;
     }
   }
-}
+
+  // Used this list in upon functions added notes and removed notes in list and then updated this list into streamController
+  List<NotesDatabase> _notes = [];
+  final StreamController _notesStreamController = StreamController.broadcast();
+
+  // Added it in the open function
+  Future<void> _cacheNotes() async {
+    final allNotes = await getAllNotes();
+    _notes = allNotes!.toList();
+    _notesStreamController.add(_notes);
+  }
+
+  // If user exists then we'll get otherwise we'll create user
+  Future getOrCreateUser({required String email}) async {
+    try {
+      final user = await getUser(email: email);
+      return user;
+    } on CouldNotFindUserException {
+      final createNewUser = await createUser(email: email);
+      return createNewUser;
+    } catch(e){
+      rethrow;
+    }
+  }
+} // Service Ends Here
 
 // Database For User Starts Here
 class UserDatabase {
