@@ -3,8 +3,20 @@ import 'package:mynotes/services/crud/crud_exceptions.dart';
 import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
 import 'package:sqflite/sqflite.dart';
+import 'dart:developer' as devtools show log;
 
-class NotesSevice {
+class NotesService {
+
+  //  Singleton Design Pattern we'll access it through factory because it is  private instance
+
+  // Named Constructor without body and without parameter
+  NotesService._sharedInstance();
+  // Creating Object
+  static final NotesService _shared = NotesService._sharedInstance();  
+  // When someone will call NotesServices() it will return _shared which is equal to NotesService._sharedInstance()
+  factory NotesService() => _shared;
+
+
   // Step 2
   // Now using sqflite creating var then will assign value
   Database? _db;
@@ -24,10 +36,21 @@ class NotesSevice {
       // Creating Tables if not exists
       await openDB.execute(createUserTable);
       await openDB.execute(createNoteTable);
+
       await _cacheNotes();
-    } catch (e) {
+
+    } on MissingPlatformDirectoryException {
       throw UnableToGetDocumentDirectoryException();
     }
+  }
+
+  Future<void> _ensureDbIsOpen() async {
+    try{
+       await open();
+    } on DatabaseAlreadyOpenException {
+      //Empty
+    }
+
   }
 
   Future<void> close() async {
@@ -50,6 +73,7 @@ class NotesSevice {
   }
 
   Future<UserDatabase> createUser({required String email}) async {
+    await _ensureDbIsOpen();
     final db = _getDatabaseOrThrow();
     final result =
         await db?.query(userTable, limit: 1, where: "email = ?", whereArgs: [
@@ -70,6 +94,7 @@ class NotesSevice {
   }
 
   Future<void> deleteUser({required String email}) async {
+    await _ensureDbIsOpen();
     final db = _getDatabaseOrThrow();
     final deletedCount = await db?.delete(
       userTable,
@@ -83,6 +108,7 @@ class NotesSevice {
   }
 
   Future<UserDatabase> getUser({required String email}) async {
+    await _ensureDbIsOpen();
     final db = _getDatabaseOrThrow();
     final result = await db?.query(
       userTable,
@@ -98,6 +124,7 @@ class NotesSevice {
   }
 
   Future<NotesDatabase> createNote({required UserDatabase owner}) async {
+    await _ensureDbIsOpen();
     final db = _getDatabaseOrThrow();
 
     // make sure owner exists in database with correct id
@@ -129,6 +156,7 @@ class NotesSevice {
   }
 
   Future deleteNote({required int noteId}) async {
+    await _ensureDbIsOpen();
     final db = _getDatabaseOrThrow();
     final deletedCount = await db?.delete(
       noteTable,
@@ -144,6 +172,7 @@ class NotesSevice {
   }
 
   Future<int?> deleteAllNotes() async {
+    await _ensureDbIsOpen();
     final db = _getDatabaseOrThrow();
     final deletedCount = await db?.delete(noteTable);
     if (deletedCount != 1) {
@@ -155,6 +184,7 @@ class NotesSevice {
   }
 
   Future<NotesDatabase> getNote({required int noteId}) async {
+    await _ensureDbIsOpen();
     final db = _getDatabaseOrThrow();
     final result = await db?.query(
       userTable,
@@ -173,6 +203,7 @@ class NotesSevice {
   }
 
   Future<Iterable<NotesDatabase>?> getAllNotes() async {
+    await _ensureDbIsOpen();
     final db = _getDatabaseOrThrow();
     final result = await db?.query(noteTable);
 
@@ -192,6 +223,7 @@ class NotesSevice {
     required NotesDatabase note,
     required String newText,
   }) async {
+    await _ensureDbIsOpen();
     final db = _getDatabaseOrThrow();
     await getNote(noteId: note.noteId);
     final updatedCount = await db?.update(
@@ -215,6 +247,8 @@ class NotesSevice {
   List<NotesDatabase> _notes = [];
   final StreamController _notesStreamController = StreamController.broadcast();
 
+  Stream get allNotes =>_notesStreamController.stream; 
+
   // Added it in the open function
   Future<void> _cacheNotes() async {
     final allNotes = await getAllNotes();
@@ -231,7 +265,8 @@ class NotesSevice {
       final createNewUser = await createUser(email: email);
       return createNewUser;
     } catch(e){
-      rethrow;
+      devtools.log(e.toString());
+          // rethrow;
     }
   }
 } // Service Ends Here
