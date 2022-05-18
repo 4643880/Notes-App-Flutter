@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mynotes/constants/routes.dart';
 import 'package:mynotes/enums/menu_action.dart';
 import 'package:mynotes/services/auth/auth_service.dart';
 import 'package:mynotes/services/crud/notes_service.dart';
@@ -32,8 +33,11 @@ class _NotesViewState extends State<NotesView> {
     return Scaffold(
       appBar: AppBar(
         title: const Text("Notes"),
-        actions: const [
-          MyMenuActionButton(),
+        actions: [
+          IconButton(onPressed: () {
+            Navigator.of(context).pushNamed(newNoteRoute);
+          }, icon: const Icon(Icons.add)),
+          const MyMenuActionButton(),
         ],
       ),
       body: FutureBuilder(
@@ -47,18 +51,20 @@ class _NotesViewState extends State<NotesView> {
               return StreamBuilder(
                 stream: _notesService.allNotes,
                 builder: (context, snapshot) {
-                  switch(snapshot.connectionState){                    
+                  switch (snapshot.connectionState) {
                     case ConnectionState.waiting:
                       return const Text("Waiting for All Notes");
-                      
+
                     default:
                       return const CircularProgressIndicator();
-                    
                   }
-              },);
-              // return const Text("Your Notes Will Appear Here");
+                },
+              );
+            // return const Text("Your Notes Will Appear Here");
             default:
-              return const Center(child: CircularProgressIndicator(),);
+              return const Center(
+                child: CircularProgressIndicator(),
+              );
           }
         },
       ),

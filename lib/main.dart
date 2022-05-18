@@ -3,10 +3,11 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:mynotes/constants/routes.dart';
 import 'package:mynotes/screens/home_page.dart';
-import 'package:mynotes/views/login_view.dart';
-import 'package:mynotes/views/notes_view.dart';
-import 'package:mynotes/views/register_view.dart';
-import 'package:mynotes/views/verify_email_view.dart';
+import 'package:mynotes/views/auth%20views/login_view.dart';
+import 'package:mynotes/views/auth%20views/register_view.dart';
+import 'package:mynotes/views/auth%20views/verify_email_view.dart';
+import 'package:mynotes/views/note%20views/new_note_view.dart';
+import 'package:mynotes/views/note%20views/notes_view.dart';
 import 'firebase_options.dart';
 import 'package:device_preview/device_preview.dart';
 
@@ -18,7 +19,7 @@ void main() async {
   runApp(
     DevicePreview(
     enabled: !kReleaseMode,
-    builder: (context) => MyApp(), // Wrap your app
+    builder: (context) => const MyApp(), // Wrap your app
   ),
     // const MyApp()
   );
@@ -43,6 +44,7 @@ class MyApp extends StatelessWidget {
         registerRoute: (context) => const RegisterView(),
         notesRoute: (context) => const NotesView(),
         emailVerifyRoute: (context) => const VerifyEmailView(),
+        newNoteRoute : ((context) => const NewNoteView()),
       },
     );
   }
