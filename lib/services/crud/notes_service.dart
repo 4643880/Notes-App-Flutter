@@ -6,16 +6,14 @@ import 'package:sqflite/sqflite.dart';
 import 'dart:developer' as devtools show log;
 
 class NotesService {
-
   //  Singleton Design Pattern we'll access it through factory because it is  private instance
 
   // Named Constructor without body and without parameter
   NotesService._sharedInstance();
   // Creating Object
-  static final NotesService _shared = NotesService._sharedInstance();  
+  static final NotesService _shared = NotesService._sharedInstance();
   // When someone will call NotesServices() it will return _shared which is equal to NotesService._sharedInstance()
   factory NotesService() => _shared;
-
 
   // Step 2
   // Now using sqflite creating var then will assign value
@@ -29,6 +27,7 @@ class NotesService {
     }
     try {
       final docsPath = await getApplicationDocumentsDirectory();
+      devtools.log(docsPath.toString());
       final dbPath = p.join(docsPath.path, dbName);
       final openDB = await openDatabase(dbPath);
       _db = openDB;
@@ -38,19 +37,17 @@ class NotesService {
       await openDB.execute(createNoteTable);
 
       await _cacheNotes();
-
     } on MissingPlatformDirectoryException {
       throw UnableToGetDocumentDirectoryException();
     }
   }
 
   Future<void> _ensureDbIsOpen() async {
-    try{
-       await open();
+    try {
+      await open();
     } on DatabaseAlreadyOpenException {
       //Empty
     }
-
   }
 
   Future<void> close() async {
@@ -188,7 +185,7 @@ class NotesService {
     final db = _getDatabaseOrThrow();
     final result = await db?.query(
       userTable,
-      limit: 1,
+      // limit: 1,
       where: "noteId = ?",
       whereArgs: [noteId],
     );
@@ -202,7 +199,7 @@ class NotesService {
     }
   }
 
-  Future<Iterable<NotesDatabase>?> getAllNotes() async {
+  Future getAllNotes() async {
     await _ensureDbIsOpen();
     final db = _getDatabaseOrThrow();
     final result = await db?.query(noteTable);
@@ -245,9 +242,9 @@ class NotesService {
 
   // Used this list in upon functions added notes and removed notes in list and then updated this list into streamController
   List<NotesDatabase> _notes = [];
-  final StreamController _notesStreamController = StreamController.broadcast();
+  late final StreamController _notesStreamController = StreamController.broadcast();
 
-  Stream get allNotes =>_notesStreamController.stream; 
+  Stream get allNotes => _notesStreamController.stream;
 
   // Added it in the open function
   Future<void> _cacheNotes() async {
@@ -257,16 +254,16 @@ class NotesService {
   }
 
   // If user exists then we'll get otherwise we'll create user
-  Future getOrCreateUser({required String email}) async {
+  Future<UserDatabase> getOrCreateUser({required String email}) async {
     try {
       final user = await getUser(email: email);
       return user;
     } on CouldNotFindUserException {
       final createNewUser = await createUser(email: email);
       return createNewUser;
-    } catch(e){
-      devtools.log(e.toString());
-          // rethrow;
+    } catch (e) {
+        devtools.log(e.toString());
+      rethrow;
     }
   }
 } // Service Ends Here
@@ -332,9 +329,9 @@ class NotesDatabase {
 }
 
 // Constants For FromRow Constructors of User & Note
-const userIdColumn = "id";
+const userIdColumn = "userId";
 const emailColumn = "email";
-const noteIdColumn = "noteid";
+const noteIdColumn = "noteId";
 const textColumn = "text";
 const isSyncWithCloudColumn = "isSyncWithCloud";
 
@@ -346,7 +343,7 @@ const userTable = "user";
 // Creating User Table Using SQL
 const createUserTable = """
 CREATE TABLE IF NOT EXISTS "user" (
-  "userId"	INTEGER,
+  "userId"	INTEGER NOT NULL,
   "email"	TEXT NOT NULL UNIQUE,
   PRIMARY KEY("userId" AUTOINCREMENT)
 );
@@ -356,11 +353,11 @@ CREATE TABLE IF NOT EXISTS "user" (
 // Creating Note Table Using SQL
 const createNoteTable = """
 CREATE TABLE IF NOT EXISTS "note" (
-  "noteId"	INTEGER,
+  "noteId"	INTEGER NOT NULL,
   "text"	TEXT,
-  "userId"	INTEGER NOT NULL UNIQUE,
+  "userId"	INTEGER NOT NULL,
   "isSyncWithCloud"	INTEGER NOT NULL DEFAULT 0,
-  FOREIGN KEY("userId") REFERENCES "user"("userId"),
+  FOREIGN KEY("userId") REFERENCES "user" ("userId"),
   PRIMARY KEY("noteId" AUTOINCREMENT)
 );
     """;
