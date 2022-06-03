@@ -9,11 +9,26 @@ class NotesService {
   //  Singleton Design Pattern we'll access it through factory because it is  private instance
 
   // Named Constructor without body and without parameter
-  NotesService._sharedInstance();
+  NotesService._sharedInstance(){
+    _notesStreamController = StreamController.broadcast(
+      onListen: () {
+        _notesStreamController.sink.add(_notes);
+      },
+    );
+  }
   // Creating Object
   static final NotesService _shared = NotesService._sharedInstance();
   // When someone will call NotesServices() it will return _shared which is equal to NotesService._sharedInstance()
   factory NotesService() => _shared;
+
+
+  // Used this list in upon functions added notes and removed notes in list and then updated this list into streamController
+  List<NotesDatabase> _notes = [];
+  late final StreamController _notesStreamController;
+
+  Stream get allNotes => _notesStreamController.stream;
+
+
 
   // Step 2
   // Now using sqflite creating var then will assign value
@@ -32,9 +47,16 @@ class NotesService {
       final openDB = await openDatabase(dbPath);
       _db = openDB;
 
-      // Creating Tables if not exists
+      // await openDB.execute("drop table note");
+
+      // Creating Tables if not exists  
       await openDB.execute(createUserTable);
-      await openDB.execute(createNoteTable);
+      await openDB.execute(createNoteTable);   
+
+      // await deleteAllNotes();  
+      // await _db!.delete(noteTable); 
+
+      
 
       await _cacheNotes();
     } on MissingPlatformDirectoryException {
@@ -76,6 +98,7 @@ class NotesService {
         await db?.query(userTable, limit: 1, where: "email = ?", whereArgs: [
       email.toLowerCase(),
     ]);
+    devtools.log(result.toString());
     if (result != null) {
       if (result.isNotEmpty) {
         throw UserAlreadyExistsException();
@@ -84,6 +107,7 @@ class NotesService {
     final userId = await db!.insert(userTable, {
       emailColumn: email.toLowerCase(),
     });
+    devtools.log("Bravo: " + userId.toString());
     return UserDatabase(
       userId: userId,
       email: email,
@@ -147,7 +171,7 @@ class NotesService {
 
     // Adding new note
     _notes.add(note);
-    _notesStreamController.add(note);
+    _notesStreamController.add(_notes);
 
     return note;
   }
@@ -184,8 +208,8 @@ class NotesService {
     await _ensureDbIsOpen();
     final db = _getDatabaseOrThrow();
     final result = await db?.query(
-      userTable,
-      // limit: 1,
+      noteTable,
+      limit: 1,
       where: "noteId = ?",
       whereArgs: [noteId],
     );
@@ -193,6 +217,7 @@ class NotesService {
       throw CouldNotFindNoteException();
     } else {
       final note = NotesDatabase.fromRow(map: result.first);
+      _notes.removeWhere((note) => note.noteId == noteId);
       _notes.add(note);
       _notesStreamController.add(_notes);
       return note;
@@ -230,21 +255,18 @@ class NotesService {
         isSyncWithCloudColumn: 0,
       },
     );
-    if (updatedCount != 1) {
+    if (updatedCount == 0) {
       throw CouldNotUpdateNoteException();
     } else {
       final updatedNote = await getNote(noteId: note.noteId);
+      _notes.removeWhere((note) => note.noteId == updatedNote.noteId );
       _notes.add(updatedNote); // Adding in List
       _notesStreamController.add(_notes); // Updating Stream
       return updatedNote;
     }
   }
 
-  // Used this list in upon functions added notes and removed notes in list and then updated this list into streamController
-  List<NotesDatabase> _notes = [];
-  late final StreamController _notesStreamController = StreamController.broadcast();
 
-  Stream get allNotes => _notesStreamController.stream;
 
   // Added it in the open function
   Future<void> _cacheNotes() async {
@@ -280,6 +302,7 @@ class UserDatabase {
 
   UserDatabase.fromRow({required Map<String, Object?> map}) {
     userId = map[userIdColumn] as int;
+    devtools.log("UserDatabase userId is :" + userId.toString());
     email = map[emailColumn] as String;
   }
 
@@ -355,7 +378,7 @@ const createNoteTable = """
 CREATE TABLE IF NOT EXISTS "note" (
   "noteId"	INTEGER NOT NULL,
   "text"	TEXT,
-  "userId"	INTEGER NOT NULL,
+  "userId"	INTEGER,
   "isSyncWithCloud"	INTEGER NOT NULL DEFAULT 0,
   FOREIGN KEY("userId") REFERENCES "user" ("userId"),
   PRIMARY KEY("noteId" AUTOINCREMENT)

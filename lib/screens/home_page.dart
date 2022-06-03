@@ -25,6 +25,7 @@ class _HomePageState extends State<HomePage> {
               final user = AuthService.firebase().currentUser;
               if (user != null) {
                 if (user.isEmailVerified) {
+                  // return const Text("Notes View");
                   return const NotesView();
                 } else {
                   return const VerifyEmailView();

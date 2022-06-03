@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mynotes/services/auth/auth_service.dart';
 import 'package:mynotes/services/crud/notes_service.dart';
+import 'dart:developer' as devtools show log;
 
 class NewNoteView extends StatefulWidget {
   const NewNoteView({Key? key}) : super(key: key);
@@ -34,7 +35,7 @@ class _NewNoteViewState extends State<NewNoteView> {
 
   void _deleteNoteIfTextIsEmpty() {
     final note = _note;
-    if (_textController.text.isEmpty && note != null) {
+    if (_textController.text.isEmpty && note != null && _textController.text == "  ") {
       _notesService.deleteNote(noteId: note.noteId);
     }
   }
@@ -42,7 +43,7 @@ class _NewNoteViewState extends State<NewNoteView> {
   void _saveNoteIfTextNotEmpty() async {
     final note = _note;
     final newText = _textController.text;
-    if (_textController.text.isNotEmpty && note != null) {
+    if (_textController.text != "  " &&_textController.text.isNotEmpty && note != null) {
       await _notesService.updateNote(
         note: note,
         newText: newText,
@@ -87,7 +88,7 @@ class _NewNoteViewState extends State<NewNoteView> {
         future: createNewNote(),
         builder: (context, snapshot) {
           switch (snapshot.connectionState){
-            case ConnectionState.done:
+            case ConnectionState.done: 
               _note = snapshot.data as NotesDatabase;
               _setupTextControllerListner();
               return TextField(
@@ -95,12 +96,12 @@ class _NewNoteViewState extends State<NewNoteView> {
                 keyboardType: TextInputType.multiline,
                 maxLines: null,
                 decoration: const InputDecoration(hintText: "Start Typing Here"),
-                );            
+                );
             default:
               return const Center(child: CircularProgressIndicator(),);
 
           }
-        
+
       },),
     );
   }
