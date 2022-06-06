@@ -5,7 +5,7 @@ import 'package:mynotes/screens/home_page.dart';
 import 'package:mynotes/views/auth%20views/login_view.dart';
 import 'package:mynotes/views/auth%20views/register_view.dart';
 import 'package:mynotes/views/auth%20views/verify_email_view.dart';
-import 'package:mynotes/views/note%20views/new_note_view.dart';
+import 'package:mynotes/views/note%20views/create_update_note_view.dart';
 import 'package:mynotes/views/note%20views/notes_view.dart';
 import 'firebase_options.dart';
 void main() async {
@@ -41,7 +41,7 @@ class MyApp extends StatelessWidget {
         registerRoute: (context) => const RegisterView(),
         notesRoute: (context) => const NotesView(),
         emailVerifyRoute: (context) => const VerifyEmailView(),
-        newNoteRoute : (context) => const NewNoteView(),
+        createUpdateNoteRoute : (context) => const CreateUpdateNoteView(),
       },
     );
   }

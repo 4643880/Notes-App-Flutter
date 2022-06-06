@@ -254,15 +254,33 @@ class NotesService {
     
     await _ensureDbIsOpen();
     final db = _getDatabaseOrThrow();
+
+    //make sure Note esists
     await getNote(noteId: note.noteId);
 
+    // row to update
+    Map<String, dynamic> row = {
+      textColumn : newText,
+      isSyncWithCloudColumn  : 0
+    };
+    
     final updatedCount = await db?.update(
-      noteTable,      
-      {        
-        textColumn: newText,
-        isSyncWithCloudColumn: 0,
-      },
+      noteTable,  
+      row,  
+      where: "noteId = ?",
+      whereArgs: [note.noteId],
     );
+
+    // final updatedCounter = await db?.update(
+    //   noteTable,      
+    //   {        
+    //     textColumn: newText,
+    //     isSyncWithCloudColumn: 0,
+    //   },
+    // );  
+
+    //SQL Query update noteTable set textColumn = newText where noteId = note.noteId
+
     if (updatedCount == 0) {
       throw CouldNotUpdateNoteException();
     } else {

@@ -2,16 +2,18 @@ import 'package:flutter/material.dart';
 import 'package:mynotes/services/crud/notes_service.dart';
 import 'package:mynotes/utilities/dialog/delete_dialog.dart';
 
-typedef DeleteNoteCallBack = void Function(NotesDatabase note);
+typedef NoteCallBack = void Function(NotesDatabase note);
 
 class NotesListView extends StatelessWidget {
   final List<NotesDatabase> notes;
-  final DeleteNoteCallBack onDeleteNote;
+  final NoteCallBack onDeleteNote;
+  final NoteCallBack onTap;
 
   const NotesListView({
     Key? key,
     required this.notes,
     required this.onDeleteNote,
+    required this.onTap,
   }) : super(key: key);
 
   @override
@@ -21,6 +23,9 @@ class NotesListView extends StatelessWidget {
       itemBuilder: (BuildContext context, int index) {
         final getNote = notes[index];
         return ListTile(
+          onTap: () {
+            onTap(getNote);
+          },
           title: Text(
             getNote.text,
             maxLines: 1,
@@ -28,14 +33,17 @@ class NotesListView extends StatelessWidget {
             overflow: TextOverflow.ellipsis,
           ),
           trailing: IconButton(
-            onPressed: () async {
-              final shouldDelete = await showDeleteDialog(context, "Delete" , "Are you sure you want to delete this note?",);
-              if(shouldDelete == true){
-                onDeleteNote(getNote);
-              }
-
-            },
-            icon: const Icon(Icons.delete)),
+              onPressed: () async {
+                final shouldDelete = await showDeleteDialog(
+                  context,
+                  "Delete",
+                  "Are you sure you want to delete this note?",
+                );
+                if (shouldDelete == true) {
+                  onDeleteNote(getNote);
+                }
+              },
+              icon: const Icon(Icons.delete)),
         );
       },
     );
