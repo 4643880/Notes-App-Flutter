@@ -29,6 +29,14 @@ class NotesService {
   Stream get allNotes => _notesStreamController.stream;
 
 
+    // Added it in the open function
+  Future<void> _cacheNotes() async {
+    final allNotes = await getAllNotes();
+    _notes = allNotes!.toList();
+    _notesStreamController.add(_notes);
+  }
+
+
 
   // Step 2
   // Now using sqflite creating var then will assign value
@@ -55,8 +63,6 @@ class NotesService {
 
       // await deleteAllNotes();  
       // await _db!.delete(noteTable); 
-
-      
 
       await _cacheNotes();
     } on MissingPlatformDirectoryException {
@@ -245,12 +251,14 @@ class NotesService {
     required NotesDatabase note,
     required String newText,
   }) async {
+    
     await _ensureDbIsOpen();
     final db = _getDatabaseOrThrow();
     await getNote(noteId: note.noteId);
+
     final updatedCount = await db?.update(
-      noteTable,
-      {
+      noteTable,      
+      {        
         textColumn: newText,
         isSyncWithCloudColumn: 0,
       },
@@ -268,12 +276,6 @@ class NotesService {
 
 
 
-  // Added it in the open function
-  Future<void> _cacheNotes() async {
-    final allNotes = await getAllNotes();
-    _notes = allNotes!.toList();
-    _notesStreamController.add(_notes);
-  }
 
   // If user exists then we'll get otherwise we'll create user
   Future<UserDatabase> getOrCreateUser({required String email}) async {

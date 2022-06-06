@@ -5,6 +5,8 @@ import 'package:mynotes/services/auth/auth_service.dart';
 import 'package:mynotes/services/crud/notes_service.dart';
 import 'dart:developer' as devtools show log;
 
+import 'package:mynotes/views/note%20views/notes_list_view.dart';
+
 class NotesView extends StatefulWidget {
   const NotesView({Key? key}) : super(key: key);
 
@@ -23,16 +25,17 @@ class _NotesViewState extends State<NotesView> {
     super.initState();
   }
 
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: const Text("Notes"),
         actions: [
-          IconButton(onPressed: () {
-            Navigator.of(context).pushNamed(newNoteRoute);
-          }, icon: const Icon(Icons.add)),
+          IconButton(
+              onPressed: () {
+                Navigator.of(context).pushNamed(newNoteRoute);
+              },
+              icon: const Icon(Icons.add)),
           const MyMenuActionButton(),
         ],
       ),
@@ -50,25 +53,18 @@ class _NotesViewState extends State<NotesView> {
                   switch (snapshot.connectionState) {
                     case ConnectionState.waiting:
                     case ConnectionState.active:
-                      if(snapshot.hasData){
-                        final allNotes = snapshot.data as List<NotesDatabase>;     
-                        return ListView.builder(
-                        itemCount: allNotes.length,
-                        itemBuilder: (BuildContext context, int index){
-                          final getNote = allNotes[index];
-                          return ListTile( 
-                            title: Text(                              
-                              getNote.text,
-                              maxLines: 1,
-                              softWrap: true,
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                            
-                          );
-                        });
-                      }else{
+                      if (snapshot.hasData) {
+                        final allNotes = snapshot.data as List<NotesDatabase>;
+                        
+                        return NotesListView(
+                          notes: allNotes,
+                           onDeleteNote: (NotesDatabase note) async {
+                             await _notesService.deleteNote(noteId: note.noteId);
+                           }
+                        );
+                      } else {
                         return const CircularProgressIndicator();
-                      }                      
+                      }
                     default:
                       return const CircularProgressIndicator();
                   }
