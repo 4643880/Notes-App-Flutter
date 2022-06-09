@@ -54,6 +54,7 @@ class _NotesViewState extends State<NotesView> {
                     case ConnectionState.waiting:
                     case ConnectionState.active:
                       if (snapshot.hasData) {
+                        // return Text("I have notes");
                         final allNotes = snapshot.data as List<NotesDatabase>;
                         return NotesListView(
                           notes: allNotes,

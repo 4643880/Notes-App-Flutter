@@ -30,10 +30,16 @@ class NotesService {
 
 
     // Added it in the open function
-  Future<void> _cacheNotes() async {
-    final allNotes = await getAllNotes();
-    _notes = allNotes!.toList();
-    _notesStreamController.add(_notes);
+  Future _cacheNotes() async {
+    try{
+      final allNotes = await getAllNotes();
+      _notes = allNotes!.toList();
+      _notesStreamController.add(_notes);
+    } on CouldNotFindNoteException {
+      devtools.log("You don't have note yet.");
+    }
+    
+    
   }
 
 
