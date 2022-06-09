@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:mynotes/services/auth/auth_service.dart';
 import 'package:mynotes/services/crud/crud_exceptions.dart';
 import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
@@ -6,43 +7,43 @@ import 'package:sqflite/sqflite.dart';
 import 'dart:developer' as devtools show log;
 
 class NotesService {
+
   //  Singleton Design Pattern we'll access it through factory because it is  private instance
 
   // Named Constructor without body and without parameter
-  NotesService._sharedInstance(){
-    _notesStreamController = StreamController.broadcast(
+  // NotesService._sharedInstance() {
+  //   _notesStreamController = StreamController.broadcast(
+  //     onListen: () {
+  //       _notesStreamController.sink.add(_notes);
+  //     },
+  //   );
+  // }
+  // Creating Object
+  // static final NotesService _shared = NotesService._sharedInstance();
+  // When someone will call NotesServices() it will return _shared which is equal to NotesService._sharedInstance()
+  // factory NotesService() => _shared;
+
+  // Used this list in upon functions added notes and removed notes in list and then updated this list into streamController
+  List<NotesDatabase> _notes = [];
+
+  late final StreamController _notesStreamController = StreamController.broadcast(
       onListen: () {
         _notesStreamController.sink.add(_notes);
       },
     );
-  }
-  // Creating Object
-  static final NotesService _shared = NotesService._sharedInstance();
-  // When someone will call NotesServices() it will return _shared which is equal to NotesService._sharedInstance()
-  factory NotesService() => _shared;
-
-
-  // Used this list in upon functions added notes and removed notes in list and then updated this list into streamController
-  List<NotesDatabase> _notes = [];
-  late final StreamController _notesStreamController;
 
   Stream get allNotes => _notesStreamController.stream;
 
-
-    // Added it in the open function
-  Future _cacheNotes() async {
-    try{
+  // Added it in the open function
+  Future cacheNotes() async {
+    try {
       final allNotes = await getAllNotes();
       _notes = allNotes!.toList();
       _notesStreamController.add(_notes);
     } on CouldNotFindNoteException {
       devtools.log("You don't have note yet.");
     }
-    
-    
   }
-
-
 
   // Step 2
   // Now using sqflite creating var then will assign value
@@ -63,14 +64,14 @@ class NotesService {
 
       // await openDB.execute("drop table note");
 
-      // Creating Tables if not exists  
+      // Creating Tables if not exists
       await openDB.execute(createUserTable);
-      await openDB.execute(createNoteTable);   
+      await openDB.execute(createNoteTable);
 
-      // await deleteAllNotes();  
-      // await _db!.delete(noteTable); 
+      // await deleteAllNotes();
+      // await _db!.delete(noteTable);
 
-      await _cacheNotes();
+      await cacheNotes();
     } on MissingPlatformDirectoryException {
       throw UnableToGetDocumentDirectoryException();
     }
@@ -237,11 +238,26 @@ class NotesService {
   }
 
   Future getAllNotes() async {
+    final currentUser = AuthService.firebase().currentUser!;
+    final userEmail = currentUser.email;    
+
+    devtools.log("abc" + userEmail.toString());
+
+
     await _ensureDbIsOpen();
     final db = _getDatabaseOrThrow();
-    final result = await db?.query(noteTable);
 
-    final alpha = result?.map((result) => NotesDatabase.fromRow(map: result));
+
+    final getUserInfo = await db!.query(userTable, where: "email = ?" , whereArgs: [userEmail]);
+    devtools.log(getUser.toString());
+    
+    final getUserId =  getUserInfo[0]["userId"];
+    devtools.log("def" + getUserId.toString());
+
+
+    final result = await db.query(noteTable, where: "userId = ?", whereArgs: [getUserId]);
+
+    final alpha = result.map((result) => NotesDatabase.fromRow(map: result));
 
     if (result != null) {
       if (result.isEmpty) {
@@ -250,14 +266,13 @@ class NotesService {
         //return NotesDatabase.fromRow(map: result)
         return alpha;
       }
-    }
+    }    
   }
 
   Future<NotesDatabase> updateNote({
     required NotesDatabase note,
     required String newText,
   }) async {
-    
     await _ensureDbIsOpen();
     final db = _getDatabaseOrThrow();
 
@@ -265,25 +280,22 @@ class NotesService {
     await getNote(noteId: note.noteId);
 
     // row to update
-    Map<String, dynamic> row = {
-      textColumn : newText,
-      isSyncWithCloudColumn  : 0
-    };
-    
+    Map<String, dynamic> row = {textColumn: newText, isSyncWithCloudColumn: 0};
+
     final updatedCount = await db?.update(
-      noteTable,  
-      row,  
+      noteTable,
+      row,
       where: "noteId = ?",
       whereArgs: [note.noteId],
     );
 
     // final updatedCounter = await db?.update(
-    //   noteTable,      
-    //   {        
+    //   noteTable,
+    //   {
     //     textColumn: newText,
     //     isSyncWithCloudColumn: 0,
     //   },
-    // );  
+    // );
 
     //SQL Query update noteTable set textColumn = newText where noteId = note.noteId
 
@@ -291,26 +303,32 @@ class NotesService {
       throw CouldNotUpdateNoteException();
     } else {
       final updatedNote = await getNote(noteId: note.noteId);
-      _notes.removeWhere((note) => note.noteId == updatedNote.noteId );
+      _notes.removeWhere((note) => note.noteId == updatedNote.noteId);
       _notes.add(updatedNote); // Adding in List
       _notesStreamController.add(_notes); // Updating Stream
       return updatedNote;
     }
   }
 
-
-
-
   // If user exists then we'll get otherwise we'll create user
-  Future<UserDatabase> getOrCreateUser({required String email}) async {
+  Future<UserDatabase> getOrCreateUser({
+    required String email,
+    // bool setAsCurrentUser = true,
+  }) async {
     try {
       final user = await getUser(email: email);
+      // if(setAsCurrentUser == true){
+      //   _user = user;
+      // }
       return user;
     } on CouldNotFindUserException {
       final createNewUser = await createUser(email: email);
+      // if(setAsCurrentUser == true){
+      //   _user = createNewUser;
+      // }
       return createNewUser;
     } catch (e) {
-        devtools.log(e.toString());
+      devtools.log(e.toString());
       rethrow;
     }
   }

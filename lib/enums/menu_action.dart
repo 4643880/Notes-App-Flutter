@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'dart:developer' as devtools show log;
 import 'package:mynotes/constants/routes.dart';
 import 'package:mynotes/services/auth/auth_service.dart';
+import 'package:mynotes/services/crud/notes_service.dart';
 import 'package:mynotes/utilities/dialog/logout_dialog.dart';
 
 enum MenuActions { logout }
@@ -27,6 +28,7 @@ class _MenuActionButtonState extends State<MyMenuActionButton> {
               "Sign Out",
               "Are you sure you would like to log out?",
             );
+            
             if (gettingLogOutValue == true) {
               await AuthService.firebase().logOut();
               Navigator.of(context)

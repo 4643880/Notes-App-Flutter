@@ -25,6 +25,7 @@ class _NotesViewState extends State<NotesView> {
     super.initState();
   }
 
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -39,14 +40,11 @@ class _NotesViewState extends State<NotesView> {
           const MyMenuActionButton(),
         ],
       ),
-      body: FutureBuilder(
+      body: FutureBuilder(        
         future: _notesService.getOrCreateUser(email: userEmail),
-        builder: (context, snapshot) {
-          // if (snapshot.connectionState == ConnectionState.done) {
-          //   return const Text("Hello");
-          // }
+        builder: (context, snapshot) {                
           switch (snapshot.connectionState) {
-            case ConnectionState.done:
+            case ConnectionState.done:            
               return StreamBuilder(
                 stream: _notesService.allNotes,
                 builder: (context, snapshot) {

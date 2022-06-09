@@ -1,11 +1,9 @@
-
-
 import 'package:flutter/material.dart';
 import 'package:mynotes/constants/routes.dart';
 import 'package:mynotes/services/auth/auth_exceptions.dart';
 import 'package:mynotes/services/auth/auth_service.dart';
+import 'package:mynotes/services/crud/notes_service.dart';
 import 'package:mynotes/utilities/dialog/error_dialog.dart';
-
 
 class LoginView extends StatefulWidget {
   const LoginView({Key? key}) : super(key: key);
@@ -56,31 +54,34 @@ class _LoginViewState extends State<LoginView> {
                 const InputDecoration(hintText: "Please Enter Your Password"),
           ),
           TextButton(
-              onPressed: () async {
+              onPressed: () async {  
                 final email = _email.text;
-                final password = _password.text;
+                final password = _password.text;                  
                 try {
-                  await AuthService.firebase().logIn(email: email, password: password);
+                  await AuthService.firebase()
+                      .logIn(email: email, password: password);
                   final user = AuthService.firebase().currentUser;
-                  final checkNull = user?.isEmailVerified;     
-                  if(checkNull == true){
-                    Navigator.pushNamedAndRemoveUntil(context, notesRoute, (route) => false);
-                  }else {
-                    Navigator.pushNamedAndRemoveUntil(context, emailVerifyRoute, (route) => false);
+                  final checkNull = user?.isEmailVerified;
+                  if (checkNull == true) {
+                    Navigator.pushNamedAndRemoveUntil(
+                        context, notesRoute, (route) => false);
+                  } else {
+                    Navigator.pushNamedAndRemoveUntil(
+                        context, emailVerifyRoute, (route) => false);
                   }
-                  
-                        
-                }on UserNotFoundAuthException {
-                  await showErrorDialog(context, "User Not Found", "No user found for that email. Please try again.");
-
-                }on WrongPasswordAuthException{
-                  await showErrorDialog(context, "Wrong Password", "Wrong password provided for that user. Please try again.");
-
-                }on GenericAuthException{
-                  await showErrorDialog(context, "Something Went Wrong", "Error:  Authentication Error");
-
+                } on UserNotFoundAuthException {
+                  await showErrorDialog(context, "User Not Found",
+                      "No user found for that email. Please try again.");
+                } on WrongPasswordAuthException {
+                  await showErrorDialog(context, "Wrong Password",
+                      "Wrong password provided for that user. Please try again.");
+                } on GenericAuthException {
+                  await showErrorDialog(context, "Something Went Wrong",
+                      "Error:  Authentication Error");
                 }
-                
+                NotesService obj = NotesService();
+                await obj.cacheNotes();
+
                 //  on FirebaseAuthException catch (e) {
                 //   if (e.code == 'user-not-found') {
                 //     devtools.log('No user found for that email.');
@@ -100,15 +101,13 @@ class _LoginViewState extends State<LoginView> {
                 // print(credential);
               },
               child: const Text("Login")),
-          TextButton(onPressed: (){
-            Navigator.of(context).pushNamed(registerRoute);
-          }, child: const Text("Create New Account")),
+          TextButton(
+              onPressed: () {
+                Navigator.of(context).pushNamed(registerRoute);
+              },
+              child: const Text("Create New Account")),
         ],
       ),
     );
   }
 }
-
-
-
-
