@@ -11,26 +11,22 @@ class NotesService {
   //  Singleton Design Pattern we'll access it through factory because it is  private instance
 
   // Named Constructor without body and without parameter
-  // NotesService._sharedInstance() {
-  //   _notesStreamController = StreamController.broadcast(
-  //     onListen: () {
-  //       _notesStreamController.sink.add(_notes);
-  //     },
-  //   );
-  // }
-  // Creating Object
-  // static final NotesService _shared = NotesService._sharedInstance();
-  // When someone will call NotesServices() it will return _shared which is equal to NotesService._sharedInstance()
-  // factory NotesService() => _shared;
-
-  // Used this list in upon functions added notes and removed notes in list and then updated this list into streamController
-  List<NotesDatabase> _notes = [];
-
-  late final StreamController _notesStreamController = StreamController.broadcast(
+  NotesService._sharedInstance() {
+    _notesStreamController = StreamController.broadcast(
       onListen: () {
         _notesStreamController.sink.add(_notes);
       },
     );
+  }
+  // Creating Object
+  static final NotesService _shared = NotesService._sharedInstance();
+  // When someone will call NotesServices() it will return _shared which is equal to NotesService._sharedInstance()
+  factory NotesService() => _shared;
+
+  // Used this list in upon functions added notes and removed notes in list and then updated this list into streamController
+  List<NotesDatabase> _notes = [];
+
+  late final StreamController _notesStreamController;
 
   Stream get allNotes => _notesStreamController.stream;
 
