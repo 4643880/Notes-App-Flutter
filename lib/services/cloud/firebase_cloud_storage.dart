@@ -1,5 +1,3 @@
-import 'dart:html';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:mynotes/services/cloud/cloud_note.dart';
 import 'package:mynotes/services/cloud/cloud_storage_constants.dart';
@@ -16,11 +14,19 @@ class FirebaseCloudStorage {
 
   final notes = FirebaseFirestore.instance.collection('notes');
 
-  void createNewNote({required String ownerUserId}) async {
-    await notes.add({
+  Future<CloudNote> createNewNote({required String ownerUserId}) async {
+    final document = await notes.add({
       ownerUserIdFieldName: ownerUserId,
       textFieldName: "",
     });
+
+    final fetchedNote = await document.get();
+
+    return CloudNote(
+      documentId: fetchedNote.id,
+      ownerUserId: ownerUserId,
+      text: "",
+    );
   }
 
   Future getNote({required String ownerUserId}) async {
@@ -34,11 +40,7 @@ class FirebaseCloudStorage {
           .then(
             (value) => value.docs.map(
               (doc) {
-                return CloudNote(
-                  documentId: doc.id,
-                  ownerUserId: doc.data()[ownerUserIdFieldName] as String,
-                  text: doc.data()[textFieldName] as String,
-                );
+                return CloudNote.fromSnapshot(doc);
               },
             ),
           );
@@ -63,17 +65,16 @@ class FirebaseCloudStorage {
     required String text,
   }) async {
     try {
-      await notes.doc(documentId).update({textFieldName : text});
+      await notes.doc(documentId).update({textFieldName: text});
     } catch (e) {
       throw CouldNotUpdateNoteException();
     }
   }
 
   Future<void> deleteNote({required String documentId}) async {
-    try{
+    try {
       notes.doc(documentId).delete();
-
-    } catch(e){
+    } catch (e) {
       throw CouldNotDeleteNoteException();
     }
   }

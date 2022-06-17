@@ -79,8 +79,8 @@ class _LoginViewState extends State<LoginView> {
                   await showErrorDialog(context, "Something Went Wrong",
                       "Error:  Authentication Error");
                 }
-                NotesService obj = NotesService();
-                await obj.cacheNotes();
+                // NotesService obj = NotesService();
+                // await obj.cacheNotes();
 
                 //  on FirebaseAuthException catch (e) {
                 //   if (e.code == 'user-not-found') {
