@@ -7,17 +7,21 @@ import 'package:firebase_core/firebase_core.dart';
 
 @immutable
 class AuthUserVerification {
-  final String? email;
+  final String id;
+  final String email;
   final bool isEmailVerified;
   const AuthUserVerification({
+    required this.id,
     required this.email,
     required this.isEmailVerified,
   });
 
   factory AuthUserVerification.fromFirebase({required User user}) {
     return AuthUserVerification(
-      email: user.email,
+      id: user.uid,
+      email: user.email!,
       isEmailVerified: user.emailVerified,
     );
   }
 }
+ 
