@@ -2,6 +2,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:mynotes/constants/routes.dart';
 import 'package:mynotes/screens/home_page.dart';
+import 'package:mynotes/screens/home_page_bloc.dart';
 import 'package:mynotes/views/auth%20views/login_view.dart';
 import 'package:mynotes/views/auth%20views/register_view.dart';
 import 'package:mynotes/views/auth%20views/verify_email_view.dart';
@@ -36,7 +37,7 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.red,
       ),
       routes: {
-        "/": (context) => const HomePage(),
+        "/": (context) => const HomePageBloc(),
         loginRoute: (context) => const LoginView(),
         registerRoute: (context) => const RegisterView(),
         notesRoute: (context) => const NotesView(),

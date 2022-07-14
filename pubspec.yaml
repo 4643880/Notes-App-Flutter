@@ -46,6 +46,8 @@ dependencies:
   path_provider: ^2.0.9
   sqflite: ^2.0.2+1
   share_plus: ^4.0.8
+  bloc: ^8.0.3
+  flutter_bloc: ^8.0.1
   # device_preview: ^1.0.0
 
 dev_dependencies:
