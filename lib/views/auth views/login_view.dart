@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mynotes/constants/routes.dart';
 import 'package:mynotes/services/auth/auth_exceptions.dart';
+import 'package:mynotes/services/auth/auth_provider.dart';
 import 'package:mynotes/services/auth/auth_service.dart';
+import 'package:mynotes/services/auth/bloc/auth_bloc.dart';
+import 'package:mynotes/services/auth/bloc/auth_events.dart';
 import 'package:mynotes/services/crud/notes_service.dart';
 import 'package:mynotes/utilities/dialog/error_dialog.dart';
 
@@ -54,10 +58,15 @@ class _LoginViewState extends State<LoginView> {
                 const InputDecoration(hintText: "Please Enter Your Password"),
           ),
           TextButton(
-              onPressed: () async {  
+              onPressed: () async {
                 final email = _email.text;
-                final password = _password.text;                  
+                final password = _password.text;
                 try {
+                  BlocProvider.of<AuthBloc>(context).add(AuthEventLogIn(
+                    email: email,
+                    password: password,
+                  ));
+
                   await AuthService.firebase()
                       .logIn(email: email, password: password);
                   final user = AuthService.firebase().currentUser;

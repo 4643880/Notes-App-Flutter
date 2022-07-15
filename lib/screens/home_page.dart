@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mynotes/services/auth/auth_service.dart';
+import 'package:mynotes/services/auth/bloc/auth_bloc.dart';
+import 'package:mynotes/services/auth/bloc/auth_events.dart';
+import 'package:mynotes/services/auth/blocs/auth_states.dart';
 import 'package:mynotes/views/auth%20views/login_view.dart';
 import 'package:mynotes/views/auth%20views/verify_email_view.dart';
 
@@ -15,46 +19,24 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      // appBar: AppBar(title: const Text("Home Page")),
-      body: FutureBuilder(
-        future: AuthService.firebase().initialize(),
-        builder: (context, snapshot) {
-          switch (snapshot.connectionState) {
-            case ConnectionState.done:
-              final user = AuthService.firebase().currentUser;
-              if (user != null) {
-                if (user.isEmailVerified) {
-                  // return const Text("Notes View");
-                  return const NotesView();
-                } else {
-                  return const VerifyEmailView();
-                }
-              } else {
-                return const LoginView();
-              }
-            default:
-              return const Center(
-                child: CircularProgressIndicator(),
-              );
-            // print("------------------------");
-            // print(FirebaseAuth.instance.currentUser);
-            // final user = FirebaseAuth.instance.currentUser;
-            // final checkVerification = user?.emailVerified ?? false;
-            // if (checkVerification == true) {
-            //   // print("Your email is verified");
-            //   return const Text("Done");
-            // } else {
-            //   // print("Your email is not verified");
-            //   return const VerifyEmailView();
-            // }
-            //   return const LoginView();
-            // default:
-            //   return const Center(child: CircularProgressIndicator());
-          }
-        },
-      ),
+    // BlocProvider.of<AuthBloc>(context).add(const AuthEventInitialize());
+    context.read<AuthBloc>().add(const AuthEventInitialize());
+    return BlocBuilder(
+      builder: (context, state) {
+        if (state is AuthStateLoggedIn) {
+          return const NotesView();
+        } else if (state is AuthStateNeedsVerification) {
+          return const VerifyEmailView();
+        } else if (state is AuthStateLoggedOut) {
+          return const LoginView();
+        } else {
+          return const Center(
+            child: CircularProgressIndicator(),
+          );
+        }
+      },
     );
+
+
   }
 }
-

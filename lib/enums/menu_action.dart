@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'dart:developer' as devtools show log;
 import 'package:mynotes/constants/routes.dart';
 import 'package:mynotes/services/auth/auth_service.dart';
+import 'package:mynotes/services/auth/bloc/auth_bloc.dart';
+import 'package:mynotes/services/auth/bloc/auth_events.dart';
 import 'package:mynotes/services/crud/notes_service.dart';
 import 'package:mynotes/utilities/dialog/logout_dialog.dart';
 
@@ -30,9 +33,7 @@ class _MenuActionButtonState extends State<MyMenuActionButton> {
             );
             
             if (gettingLogOutValue == true) {
-              await AuthService.firebase().logOut();
-              Navigator.of(context)
-                  .pushNamedAndRemoveUntil(loginRoute, (route) => false);
+              BlocProvider.of<AuthBloc>(context).add(const AuthEventLogOut());
             }
             devtools.log(gettingLogOutValue.toString());
             break;
