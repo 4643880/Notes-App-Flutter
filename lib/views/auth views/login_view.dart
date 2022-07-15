@@ -6,6 +6,7 @@ import 'package:mynotes/services/auth/auth_provider.dart';
 import 'package:mynotes/services/auth/auth_service.dart';
 import 'package:mynotes/services/auth/bloc/auth_bloc.dart';
 import 'package:mynotes/services/auth/bloc/auth_events.dart';
+import 'package:mynotes/services/auth/bloc/auth_states.dart';
 import 'package:mynotes/services/crud/notes_service.dart';
 import 'package:mynotes/utilities/dialog/error_dialog.dart';
 
@@ -57,59 +58,32 @@ class _LoginViewState extends State<LoginView> {
             decoration:
                 const InputDecoration(hintText: "Please Enter Your Password"),
           ),
-          TextButton(
-              onPressed: () async {
-                final email = _email.text;
-                final password = _password.text;
-                try {
-                  BlocProvider.of<AuthBloc>(context).add(AuthEventLogIn(
-                    email: email,
-                    password: password,
-                  ));
-
-                  await AuthService.firebase()
-                      .logIn(email: email, password: password);
-                  final user = AuthService.firebase().currentUser;
-                  final checkNull = user?.isEmailVerified;
-                  if (checkNull == true) {
-                    Navigator.pushNamedAndRemoveUntil(
-                        context, notesRoute, (route) => false);
-                  } else {
-                    Navigator.pushNamedAndRemoveUntil(
-                        context, emailVerifyRoute, (route) => false);
-                  }
-                } on UserNotFoundAuthException {
+          BlocListener<AuthBloc, AuthState>(
+            listener: (context, state) async {
+              if(state is AuthStateForError){
+                if(state.exception is UserNotFoundAuthException){
                   await showErrorDialog(context, "User Not Found",
-                      "No user found for that email. Please try again.");
-                } on WrongPasswordAuthException {
+                        "No user found for that email. Please try again.");
+                }else if(state.exception is WrongPasswordAuthException){
                   await showErrorDialog(context, "Wrong Password",
-                      "Wrong password provided for that user. Please try again.");
-                } on GenericAuthException {
+                        "Wrong password provided for that user. Please try again.");
+                }else if(state.exception is GenericAuthException){
                   await showErrorDialog(context, "Something Went Wrong",
-                      "Error:  Authentication Error");
+                        "Error:  Authentication Error");
                 }
-                // NotesService obj = NotesService();
-                // await obj.cacheNotes();
-
-                //  on FirebaseAuthException catch (e) {
-                //   if (e.code == 'user-not-found') {
-                //     devtools.log('No user found for that email.');
-                //     await showErrorDialog(context, "User Not Found", "No user found for that email. Please try again.");
-                //   } else if (e.code == 'wrong-password') {
-                //     devtools.log('Wrong password provided for that user.');
-                //     await showErrorDialog(context, "Wrong Password", "Wrong password provided for that user. Please try again.");
-                //   }else{
-                //     devtools.log(e.code.toString());
-                //     await showErrorDialog(context, "Something Went Wrong", "Error:  ${e.code}");
-                //   }
-                // } catch (e){
-                //   devtools.log(e.toString());
-                //     await showErrorDialog(context, "Something Went Wrong", "Error:  $e");
-
-                // }
-                // print(credential);
-              },
-              child: const Text("Login")),
+              }
+            },
+            child: TextButton(
+                onPressed: () async {
+                  final email = _email.text;
+                  final password = _password.text;
+                  BlocProvider.of<AuthBloc>(context).add(AuthEventLogIn(
+                      email: email,
+                      password: password,
+                    ));
+                },
+                child: const Text("Login")),
+          ),
           TextButton(
               onPressed: () {
                 Navigator.of(context).pushNamed(registerRoute);
