@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mynotes/constants/routes.dart';
 import 'package:mynotes/services/auth/auth_service.dart';
+import 'package:mynotes/services/auth/bloc/auth_bloc.dart';
+import 'package:mynotes/services/auth/bloc/auth_events.dart';
+import 'package:mynotes/services/auth/bloc/auth_states.dart';
 import 'package:mynotes/utilities/dialog/error_dialog.dart';
 
 class VerifyEmailView extends StatefulWidget {
@@ -20,31 +24,50 @@ class _VerifyEmailViewState extends State<VerifyEmailView> {
       body: Center(
         child: Padding(
           padding: const EdgeInsets.all(16.0),
-          child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-            const Text("Verify Your Email", style: TextStyle(fontWeight: FontWeight.w600), textScaleFactor: 2.5),
-            const SizedBox(height: 10,),
-            const Text("If you did'nt receive verification email yet. Please click the button below.", style: TextStyle(fontSize: 20), textAlign: TextAlign.justify,),
-            const SizedBox(height: 10,),
-            ElevatedButton(                     
+          child:
+              Column(mainAxisAlignment: MainAxisAlignment.center, children: [
+            const Text(
+              "Verify Your Email",
+              style: TextStyle(fontWeight: FontWeight.w600),
+              textScaleFactor: 2.5,
+            ),
+            const SizedBox(
+              height: 10,
+            ),
+            const Text(
+              "If you did'nt receive verification email yet. Please click the button below.",
+              style: TextStyle(fontSize: 20),
+              textAlign: TextAlign.justify,
+            ),
+            const SizedBox(
+              height: 10,
+            ),
+            ElevatedButton(
                 onPressed: () async {
-                  await AuthService.firebase().sendEmailVerification();
 
-                  await showErrorDialog(context, "Verify Your Email", "We have sent you verification email again.");
-
-                  Navigator.of(context)
-                      .pushNamedAndRemoveUntil(loginRoute, (route) => false);
+                  context.read<AuthBloc>().add(const AuthEventSendVerificationEmail());
+                  
                 },
                 child: const Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 8, vertical: 6),
-                  child:  Text("Verify", textScaleFactor: 1.4,),
+                  padding: EdgeInsets.symmetric(
+                    horizontal: 8,
+                    vertical: 6,
+                  ),
+                  child: Text(
+                    "Verify",
+                    textScaleFactor: 1.4,
+                  ),
                 )),
-            ElevatedButton(onPressed: () async {
-              await AuthService.firebase().logOut();
-              Navigator.of(context).pushNamedAndRemoveUntil(loginRoute, (route) => false);
-
-            }, child: const Padding(
+            ElevatedButton(
+                onPressed: () async {
+                  context.read<AuthBloc>().add(const AuthEventLogOut());
+                },
+                child: const Padding(
                   padding: EdgeInsets.symmetric(horizontal: 4, vertical: 6),
-                  child:  Text("Restart", textScaleFactor: 1.4,),
+                  child: Text(
+                    "Restart",
+                    textScaleFactor: 1.4,
+                  ),
                 )),
           ]),
         ),

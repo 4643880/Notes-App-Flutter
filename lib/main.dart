@@ -46,10 +46,7 @@ class MyApp extends StatelessWidget {
               create: (context) => AuthBloc(provider: FirebaseAuthProvider()),
               child: const HomePage(),
             ),
-        loginRoute: (context) => const LoginView(),
-        registerRoute: (context) => const RegisterView(),
         notesRoute: (context) => const NotesView(),
-        emailVerifyRoute: (context) => const VerifyEmailView(),
         createUpdateNoteRoute: (context) => const CreateUpdateNoteView(),
       },
     );
