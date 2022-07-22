@@ -22,7 +22,6 @@ class LoginView extends StatefulWidget {
 class _LoginViewState extends State<LoginView> {
   late final TextEditingController _email;
   late final TextEditingController _password;
-  CloseDialog? _closeDialogHandle;
 
   @override
   void initState() {
@@ -47,18 +46,7 @@ class _LoginViewState extends State<LoginView> {
         if (state is AuthStateLoggedOut) {
           devtools.log(state.exception.toString());
 
-          // Displaying Dialog
-          final closeDialog = _closeDialogHandle;
-          if (!state.isInitializing && _closeDialogHandle != null) {
-            closeDialog!();
-            _closeDialogHandle = null;
-          } else if (state.isInitializing && _closeDialogHandle == null) {
-            _closeDialogHandle = showLoadingDialog(
-              context: context,
-              text: "Loading...",
-            );
-          }
-
+          
           if (state.exception is UserNotFoundAuthException) {
             await showErrorDialog(context, "User Not Found",
                 "No user found for that email. Please try again.");

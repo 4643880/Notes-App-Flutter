@@ -8,7 +8,7 @@ import 'package:mynotes/services/auth/firebase_auth_provider.dart';
 
 class AuthBloc extends Bloc<AuthEvent, AuthState> {
   AuthBloc({required FirebaseAuthProvider provider})
-      : super(const AuthStateInitial()) {
+      : super(const AuthStateInitial(isLoading: true)) {
     // Initialize
     on<AuthEventInitialize>((event, emit) async {
       await provider.initialize();
@@ -16,14 +16,15 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       if (user == null) {
         emit(const AuthStateLoggedOut(
           null,
-          isInitializing: false,
+          isLoading: false,
         ));
       } else if (!user.isEmailVerified) {
-        emit(const AuthStateNeedsVerification());
+        emit(const AuthStateNeedsVerification(isLoading: false));
       } else {
         emit(AuthStateLoggedIn(
           null,
           user: user,
+          isLoading: false
         ));
       }
     });
@@ -31,7 +32,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     // Login
     on<AuthEventLogIn>((event, emit) async {
       // Displaying Dialog
-      emit(const AuthStateLoggedOut(null, isInitializing: true));
+      emit(const AuthStateLoggedOut(null, isLoading: true, isLoadingText: "Please wait a moment."));
 
       await Future.delayed(const Duration(seconds: 8));
 
@@ -43,17 +44,17 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
 
         if (!user.isEmailVerified) {
           // Disable Loading
-          emit(const AuthStateLoggedOut(null, isInitializing: false));
+          emit(const AuthStateLoggedOut(null, isLoading: false,));
 
-          emit(const AuthStateNeedsVerification());
+          emit(const AuthStateNeedsVerification(isLoading: false));
         } else {
           // Disable Loading
-          emit(const AuthStateLoggedOut(null, isInitializing: false));
+          emit(const AuthStateLoggedOut(null, isLoading: false,));
 
-          emit(AuthStateLoggedIn(null, user: user));
+          emit(AuthStateLoggedIn(null, user: user, isLoading: false));
         }
       } on Exception catch (e) {
-        emit(AuthStateLoggedOut(e, isInitializing: false));
+        emit(const AuthStateLoggedOut(null, isLoading: false, isLoadingText: "Please wait a moment."));
       }
     });
 
@@ -61,9 +62,9 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     on<AuthEventLogOut>((event, emit) async {
       try {
         await provider.logOut();
-        emit(const AuthStateLoggedOut(null, isInitializing: false));
+        emit(const AuthStateLoggedOut(null, isLoading: false));
       } on Exception catch (e) {
-        emit(AuthStateLoggedOut(e, isInitializing: false));
+        emit(AuthStateLoggedOut(e, isLoading: false));
       }
     });
 
@@ -77,9 +78,9 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
           password: password,
         );
         await provider.sendEmailVerification();
-        emit(const AuthStateNeedsVerification());
+        emit(const AuthStateNeedsVerification(isLoading: false));
       } on Exception catch (e) {
-        emit(AuthStateRegistering(e));
+        emit(AuthStateRegistering(e, isLoading: false));
       }
     });
 
