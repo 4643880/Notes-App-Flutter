@@ -1,7 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.aizazhaider.mynotes">
    <application
-        android:label="mynotes"
+        android:label="MyNotes"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity
