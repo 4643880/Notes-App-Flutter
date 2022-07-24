@@ -1,4 +1,5 @@
 import 'package:flutter/cupertino.dart';
+import 'package:mynotes/services/auth/bloc/auth_bloc.dart';
 
 @immutable
 abstract class AuthEvent {
@@ -39,4 +40,10 @@ class AuthEventRegister extends AuthEvent{
 
 class AuthEventShouldCreateAccountOrShouldRegister extends AuthEvent{
   const AuthEventShouldCreateAccountOrShouldRegister();
+}
+
+
+class AuthEventForgotPassword extends AuthEvent{
+  final String? email;
+  const AuthEventForgotPassword({this.email});
 }

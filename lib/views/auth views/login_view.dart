@@ -42,11 +42,8 @@ class _LoginViewState extends State<LoginView> {
     return BlocListener<AuthBloc, AuthState>(
       listener: (context, state) async {
         devtools.log(state.toString());
-
-        if (state is AuthStateLoggedOut) {
+        if (state is AuthStateLoggedOut) {    
           devtools.log(state.exception.toString());
-
-          
           if (state.exception is UserNotFoundAuthException) {
             await showErrorDialog(context, "User Not Found",
                 "No user found for that email. Please try again.");
@@ -61,42 +58,51 @@ class _LoginViewState extends State<LoginView> {
       },
       child: Scaffold(
         appBar: AppBar(title: const Text("Login")),
-        body: Column(
-          children: [
-            TextField(
-              controller: _email,
-              enableSuggestions: true,
-              autocorrect: true,
-              keyboardType: TextInputType.emailAddress,
-              decoration:
-                  const InputDecoration(hintText: "Please Enter Your Email"),
-            ),
-            TextField(
-              controller: _password,
-              obscureText: true,
-              autocorrect: false,
-              enableSuggestions: false,
-              keyboardType: TextInputType.visiblePassword,
-              decoration:
-                  const InputDecoration(hintText: "Please Enter Your Password"),
-            ),
-            TextButton(
-                onPressed: () async {
-                  final email = _email.text;
-                  final password = _password.text;
-                  BlocProvider.of<AuthBloc>(context).add(AuthEventLogIn(
-                    email: email,
-                    password: password,
-                  ));
-                },
-                child: const Text("Login")),
-            TextButton(
-                onPressed: () {
-                  context.read<AuthBloc>().add(
-                      const AuthEventShouldCreateAccountOrShouldRegister());
-                },
-                child: const Text("Create New Account")),
-          ],
+        body: Padding(
+          padding: const EdgeInsets.all(32.0),
+          child: Column(
+            children: [
+              const Text("Please login to your account in order to interect with and create notes."),
+              TextField(
+                controller: _email,
+                enableSuggestions: true,
+                autocorrect: true,
+                keyboardType: TextInputType.emailAddress,
+                decoration:
+                    const InputDecoration(hintText: "Please Enter Your Email"),
+              ),
+              TextField(
+                controller: _password,
+                obscureText: true,
+                autocorrect: false,
+                enableSuggestions: false,
+                keyboardType: TextInputType.visiblePassword,
+                decoration:
+                    const InputDecoration(hintText: "Please Enter Your Password"),
+              ),
+              TextButton(
+                  onPressed: () async {
+                    final email = _email.text;
+                    final password = _password.text;
+                    BlocProvider.of<AuthBloc>(context).add(AuthEventLogIn(
+                      email: email,
+                      password: password,
+                    ));
+                  },
+                  child: const Text("Login")),
+              TextButton(
+                  onPressed: () {
+                    context.read<AuthBloc>().add(const AuthEventForgotPassword());
+                  },
+                  child: const Text("Forgot Password")),
+              TextButton(
+                  onPressed: () {
+                    context.read<AuthBloc>().add(
+                        const AuthEventShouldCreateAccountOrShouldRegister());
+                  },
+                  child: const Text("Create New Account")),
+            ],
+          ),
         ),
       ),
     );

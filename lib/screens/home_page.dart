@@ -5,6 +5,7 @@ import 'package:mynotes/services/auth/auth_service.dart';
 import 'package:mynotes/services/auth/bloc/auth_bloc.dart';
 import 'package:mynotes/services/auth/bloc/auth_events.dart';
 import 'package:mynotes/services/auth/bloc/auth_states.dart';
+import 'package:mynotes/views/auth%20views/forgot_password_view.dart';
 import 'package:mynotes/views/auth%20views/login_view.dart';
 import 'package:mynotes/views/auth%20views/register_view.dart';
 import 'package:mynotes/views/auth%20views/verify_email_view.dart';
@@ -40,7 +41,9 @@ class _HomePageState extends State<HomePage> {
           return const VerifyEmailView();
         } else if (state is AuthStateLoggedOut) {
           return const LoginView();
-        } else {
+        } else if (state is AuthStateForgotPassword) {
+          return const ForgotPasswordView();
+        }else {
           return Scaffold(
             appBar: AppBar(),
             body: const Center(

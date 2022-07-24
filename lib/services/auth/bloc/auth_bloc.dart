@@ -21,20 +21,17 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       } else if (!user.isEmailVerified) {
         emit(const AuthStateNeedsVerification(isLoading: false));
       } else {
-        emit(AuthStateLoggedIn(
-          null,
-          user: user,
-          isLoading: false
-        ));
+        emit(AuthStateLoggedIn(null, user: user, isLoading: false));
       }
     });
 
     // Login
     on<AuthEventLogIn>((event, emit) async {
       // Displaying Dialog
-      emit(const AuthStateLoggedOut(null, isLoading: true, isLoadingText: "Please wait a moment."));
+      emit(const AuthStateLoggedOut(null,
+          isLoading: true, isLoadingText: "Please wait a moment."));
 
-      await Future.delayed(const Duration(seconds: 8));
+      // await Future.delayed(const Duration(seconds: 8));
 
       final email = event.email;
       final password = event.password;
@@ -44,17 +41,24 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
 
         if (!user.isEmailVerified) {
           // Disable Loading
-          emit(const AuthStateLoggedOut(null, isLoading: false,));
+          emit(const AuthStateLoggedOut(
+            null,
+            isLoading: false,
+          ));
 
           emit(const AuthStateNeedsVerification(isLoading: false));
         } else {
           // Disable Loading
-          emit(const AuthStateLoggedOut(null, isLoading: false,));
+          emit(const AuthStateLoggedOut(
+            null,
+            isLoading: false,
+          ));
 
           emit(AuthStateLoggedIn(null, user: user, isLoading: false));
         }
       } on Exception catch (e) {
-        emit(const AuthStateLoggedOut(null, isLoading: false, isLoadingText: "Please wait a moment."));
+        emit(AuthStateLoggedOut(e,
+            isLoading: false, isLoadingText: "Please wait a moment."));
       }
     });
 
@@ -86,8 +90,53 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
 
     // Email Verificaiton
     on<AuthEventSendVerificationEmail>((event, emit) async {
-      provider.sendEmailVerification();
+      await provider.sendEmailVerification();
       emit(state);
+    });
+
+    // Forgot Password
+    on<AuthEventForgotPassword>((event, emit) async {
+      emit(const AuthStateForgotPassword(
+        exception: null,
+        hasSentEmail: false,
+        isLoading: false,
+      ));
+
+      final gettingEmail = event.email;
+      if (gettingEmail == null) {
+        return; // User wants to go to forgot password screen;
+      }
+
+      // Now User Wants to send forgot password email
+      emit(const AuthStateForgotPassword(
+        exception: null,
+        hasSentEmail: false,
+        isLoading: true,
+      ));
+
+      bool didSendEmail;
+      Exception? exception;
+      try {
+        await provider.sendPasswordReset(toEmail: gettingEmail);
+        didSendEmail = true;
+        exception = null;
+      } on Exception catch (e) {
+        didSendEmail = false;
+        exception = e;
+
+        emit(AuthStateForgotPassword(
+          exception: exception,
+          hasSentEmail: didSendEmail,
+          isLoading: false,
+        ));
+      }
+    });
+
+    on<AuthEventShouldCreateAccountOrShouldRegister>((event, emit) {
+      emit(const AuthStateRegistering(
+        null,
+        isLoading: false,
+      ));
     });
   }
 }
