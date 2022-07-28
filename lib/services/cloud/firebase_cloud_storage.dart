@@ -29,34 +29,35 @@ class FirebaseCloudStorage {
     );
   }
 
-  Future getNote({required String ownerUserId}) async {
-    try {
-      return await notes
-          .where(
-            ownerUserIdFieldName,
-            isEqualTo: ownerUserId,
-          )
-          .get()
-          .then(
-            (value) => value.docs.map(
-              (doc) {
-                return CloudNote.fromSnapshot(doc);
-              },
-            ),
-          );
-    } catch (e) {
-      throw CouldNotGetAllNotesException();
-    }
-  }
+  // Future getNote({required String ownerUserId}) async {
+  //   try {
+  //     return await notes
+  //         .where(
+  //           ownerUserIdFieldName,
+  //           isEqualTo: ownerUserId,
+  //         )
+  //         .get()
+  //         .then(
+  //           (value) => value.docs.map(
+  //             (doc) {
+  //               return CloudNote.fromSnapshot(doc);
+  //             },
+  //           ),
+  //         );
+  //   } catch (e) {
+  //     throw CouldNotGetAllNotesException();
+  //   }
+  // }
 
   Stream allNotes({required String ownerUserId}) {
     final notes = FirebaseFirestore.instance.collection('notes');
-    return notes.snapshots().map(
-          (event) => event.docs
-              .map(
-                (doc) => CloudNote.fromSnapshot(doc),
-              )
-              .where((note) => note.ownerUserId == ownerUserId),
+    return notes
+        .where(ownerUserIdFieldName, isEqualTo: ownerUserId)
+        .snapshots()
+        .map(
+          (event) => event.docs.map(
+            (doc) => CloudNote.fromSnapshot(doc),
+          ),
         );
   }
 

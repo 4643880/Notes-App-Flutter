@@ -42,7 +42,7 @@ class _LoginViewState extends State<LoginView> {
     return BlocListener<AuthBloc, AuthState>(
       listener: (context, state) async {
         devtools.log(state.toString());
-        if (state is AuthStateLoggedOut) {    
+        if (state is AuthStateLoggedOut) {
           devtools.log(state.exception.toString());
           if (state.exception is UserNotFoundAuthException) {
             await showErrorDialog(context, "User Not Found",
@@ -62,7 +62,8 @@ class _LoginViewState extends State<LoginView> {
           padding: const EdgeInsets.all(32.0),
           child: Column(
             children: [
-              const Text("Please login to your account in order to interect with and create notes."),
+              const Text(
+                  "Please login to your account in order to interect with and create notes."),
               TextField(
                 controller: _email,
                 enableSuggestions: true,
@@ -77,8 +78,8 @@ class _LoginViewState extends State<LoginView> {
                 autocorrect: false,
                 enableSuggestions: false,
                 keyboardType: TextInputType.visiblePassword,
-                decoration:
-                    const InputDecoration(hintText: "Please Enter Your Password"),
+                decoration: const InputDecoration(
+                    hintText: "Please Enter Your Password"),
               ),
               TextButton(
                   onPressed: () async {
@@ -92,7 +93,9 @@ class _LoginViewState extends State<LoginView> {
                   child: const Text("Login")),
               TextButton(
                   onPressed: () {
-                    context.read<AuthBloc>().add(const AuthEventForgotPassword());
+                    context
+                        .read<AuthBloc>()
+                        .add(const AuthEventForgotPassword());
                   },
                   child: const Text("Forgot Password")),
               TextButton(
