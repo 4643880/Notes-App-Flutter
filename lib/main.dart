@@ -5,6 +5,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mynotes/constants/routes.dart';
 import 'package:mynotes/screens/home_page.dart';
 import 'package:mynotes/screens/home_page_bloc.dart';
+import 'package:mynotes/screens/user_interface/screens/constants.dart';
+import 'package:mynotes/screens/user_interface/screens/welcome/welcome_screen.dart';
 import 'package:mynotes/services/auth/auth_provider.dart';
 import 'package:mynotes/services/auth/bloc/auth_bloc.dart';
 import 'package:mynotes/services/auth/firebase_auth_provider.dart';
@@ -34,21 +36,24 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       // useInheritedMediaQuery: true,
       // locale: DevicePreview.locale(context),
       // builder: DevicePreview.appBuilder,
       title: 'Flutter Demo',
       theme: ThemeData(
-        primarySwatch: Colors.red,
+        primaryColor: kPrimaryColor,
+        scaffoldBackgroundColor: Colors.white
       ),
-      routes: {
-        "/": (context) => BlocProvider<AuthBloc>(
-              create: (context) => AuthBloc(provider: FirebaseAuthProvider()),
-              child: const HomePage(),
-            ),
-        notesRoute: (context) => const NotesView(),
-        createUpdateNoteRoute: (context) => const CreateUpdateNoteView(),
-      },
+      home: const WelcomeScreen(),
+      // routes: {
+      //   "/": (context) => BlocProvider<AuthBloc>(
+      //         create: (context) => AuthBloc(provider: FirebaseAuthProvider()),
+      //         child: const HomePage(),
+      //       ),
+      //   notesRoute: (context) => const NotesView(),
+      //   createUpdateNoteRoute: (context) => const CreateUpdateNoteView(),
+      // },
     );
   }
 }
