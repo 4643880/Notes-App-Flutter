@@ -161,7 +161,7 @@ class OrDivider extends StatelessWidget {
           Expanded(
             child: Divider(
               color: Color(0xffd9d9d9),
-              thickness: 3,
+              thickness: 2,
             ),
           ),
           Padding(
@@ -174,7 +174,7 @@ class OrDivider extends StatelessWidget {
           Expanded(
             child: Divider(
               color: Color(0xffd9d9d9),
-              thickness: 3,
+              thickness: 2,
             ),
           ),
         ],

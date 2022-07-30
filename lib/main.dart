@@ -6,6 +6,9 @@ import 'package:mynotes/constants/routes.dart';
 import 'package:mynotes/screens/home_page.dart';
 import 'package:mynotes/screens/home_page_bloc.dart';
 import 'package:mynotes/screens/user_interface/screens/constants.dart';
+import 'package:mynotes/screens/user_interface/screens/email_verification/email_verify_screen.dart';
+import 'package:mynotes/screens/user_interface/screens/forgot_password/forgot_password_screen.dart';
+import 'package:mynotes/screens/user_interface/screens/login/login_screen.dart';
 import 'package:mynotes/screens/user_interface/screens/welcome/welcome_screen.dart';
 import 'package:mynotes/services/auth/auth_provider.dart';
 import 'package:mynotes/services/auth/bloc/auth_bloc.dart';
@@ -45,7 +48,7 @@ class MyApp extends StatelessWidget {
         primaryColor: kPrimaryColor,
         scaffoldBackgroundColor: Colors.white
       ),
-      home: const WelcomeScreen(),
+      home: const LoginScreen(),
       // routes: {
       //   "/": (context) => BlocProvider<AuthBloc>(
       //         create: (context) => AuthBloc(provider: FirebaseAuthProvider()),
