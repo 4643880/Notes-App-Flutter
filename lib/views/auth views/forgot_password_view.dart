@@ -1,12 +1,15 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:mynotes/constants/constants.dart';
 import 'package:mynotes/services/auth/auth_exceptions.dart';
 import 'package:mynotes/services/auth/bloc/auth_bloc.dart';
 import 'package:mynotes/services/auth/bloc/auth_events.dart';
 import 'package:mynotes/services/auth/bloc/auth_states.dart';
 import 'package:mynotes/utilities/dialog/error_dialog.dart';
 import 'package:mynotes/utilities/dialog/password_reset_email_sent_dialog.dart';
+import 'package:mynotes/views/components/rounded_button.dart';
 
 class ForgotPasswordView extends StatefulWidget {
   const ForgotPasswordView({Key? key}) : super(key: key);
@@ -16,26 +19,13 @@ class ForgotPasswordView extends StatefulWidget {
 }
 
 class _ForgotPasswordViewState extends State<ForgotPasswordView> {
-  late final TextEditingController _emailController;
-
-  @override
-  void initState() {
-    _emailController = TextEditingController();
-  }
-
-  @override
-  void dispose() {
-    _emailController.dispose();
-    super.dispose();
-  }
-
   @override
   Widget build(BuildContext context) {
     return BlocListener<AuthBloc, AuthState>(
       listener: (context, state) async {
         if (state is AuthStateForgotPassword) {
           if (state.hasSentEmail) {
-            _emailController.clear();
+            // _emailController.clear();
             await showPasswordResetSentDialog(
               context: context,
               title: "Password Reset",
@@ -63,50 +53,203 @@ class _ForgotPasswordViewState extends State<ForgotPasswordView> {
           }
         }
       },
-      child: Scaffold(
-        appBar: AppBar(
-          title: const Text("Forgot Password"),
-        ),
-        body: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            children: [
-              const Text(
-                  "If you forgot your password, simply enter your email and we'll send you password reset link."),
-              TextField(
-                controller: _emailController,
-                autocorrect: false,
-                keyboardType: TextInputType.emailAddress,
-                autofocus: true,
-                decoration:
-                    const InputDecoration(hintText: "Please enter address"),
-              ),
-              TextButton(
-                onPressed: () {
-                  final email = _emailController.text;
-                  BlocProvider.of<AuthBloc>(context)
-                      .add(AuthEventForgotPassword(email: email));
-                },
-                child: const Text("Send Me Password Reset Link"),
-              ),
-              TextButton(
-                onPressed: () {
-                  context.read<AuthBloc>().add(const AuthEventLogOut());
-                },
-                child: const Text("Back to Login Page"),
-              ),
-            ],
+      child: const ForgotPasswordScreen(),
+    );
+  }
+}
+
+class ForgotPasswordScreen extends StatelessWidget {
+  const ForgotPasswordScreen({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return const Scaffold(
+      body: ForgotPaswordBody(),
+    );
+  }
+}
+
+class ForgotPasswordBackground extends StatelessWidget {
+  final Widget child;
+  const ForgotPasswordBackground({
+    Key? key,
+    required this.child,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    Size size = MediaQuery.of(context).size;
+    return Container(
+      height: size.height,
+      width: double.infinity,
+      child: Stack(
+        alignment: Alignment.center,
+        children: [
+          Positioned(
+            top: 0,
+            left: 0,
+            child: Image.asset(
+              "assets/images/main_top.png",
+              width: size.width * 0.3,
+            ),
           ),
+          Positioned(
+            bottom: 0,
+            right: 0,
+            child: Image.asset(
+              "assets/images/login_bottom.png",
+              width: size.width * 0.4,
+            ),
+          ),
+          child,
+        ],
+      ),
+    );
+  }
+}
+
+class ForgotPaswordBody extends StatefulWidget {
+  const ForgotPaswordBody({Key? key}) : super(key: key);
+
+  @override
+  State<ForgotPaswordBody> createState() => _ForgotPaswordBodyState();
+}
+
+class _ForgotPaswordBodyState extends State<ForgotPaswordBody> {
+  late final TextEditingController _emailController;
+
+  @override
+  void initState() {
+    _emailController = TextEditingController();
+  }
+
+  @override
+  void dispose() {
+    _emailController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    Size size = MediaQuery.of(context).size;
+    return ForgotPasswordBackground(
+      child: SingleChildScrollView(
+        reverse: true,
+        physics: const AlwaysScrollableScrollPhysics(
+          parent: BouncingScrollPhysics(),
+        ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const Text(
+              "FORGOT PASSWORD",
+              style: TextStyle(
+                color: kPrimaryColor,
+                fontSize: 25,
+                fontWeight: FontWeight.w900,
+              ),
+            ),
+            SizedBox(
+              height: size.height * 0.04,
+            ),
+            SvgPicture.asset("assets/icons/login.svg"),
+            SizedBox(
+              height: size.height * 0.04,
+            ),
+            TextFieldContainer(
+              childTextField: TextField(
+                controller: _emailController,
+                keyboardType: TextInputType.emailAddress,
+                decoration: const InputDecoration(
+                    border: InputBorder.none,
+                    icon: Icon(
+                      Icons.email,
+                      color: kPrimaryColor,
+                    ),
+                    hintText: "Enter Your Email Address"),
+              ),
+            ),
+            RoundedButton(
+              onTap: () {
+                final email = _emailController.text;
+                BlocProvider.of<AuthBloc>(context)
+                    .add(AuthEventForgotPassword(email: email));
+              },
+              title: "Send Me the Verification Link",
+              buttonColor: kPrimaryColor,
+              titleColor: Colors.white,
+              paddingForRoundedButton: MaterialStateProperty.all(
+                const EdgeInsets.symmetric(vertical: 18, horizontal: 5),
+              ),
+            ),
+            SizedBox(
+              height: size.height * 0.025,
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Text("Go back to Login Page?  "),
+                InkWell(
+                  onTap: () {
+                    context.read<AuthBloc>().add(
+                          const AuthEventLoggingIn(),
+                        );
+                  },
+                  child: const Text(
+                    "LOGIN ",
+                    style: TextStyle(
+                        color: kPrimaryColor, fontWeight: FontWeight.bold),
+                  ),
+                ),
+              ],
+            ),
+          ],
         ),
       ),
     );
   }
 }
 
+class TextFieldContainer extends StatelessWidget {
+  final Widget childTextField;
+  const TextFieldContainer({
+    Key? key,
+    required this.childTextField,
+  }) : super(key: key);
 
-        // case 'firebase_auth/invalid-email':
-        //   throw InvalidEmailAuthException();
-        // case 'firebase_auth/user-not-found':
-        //   throw UserNotFoundAuthException();
-        // default: 
-        //   throw GenericAuthException();
+  @override
+  Widget build(BuildContext context) {
+    Size size = MediaQuery.of(context).size;
+    return Container(
+      width: size.width * 0.8,
+      decoration: BoxDecoration(
+        color: kPrimaryLightColor,
+        borderRadius: BorderRadius.circular(30),
+      ),
+      padding: const EdgeInsets.symmetric(
+        vertical: 5,
+        horizontal: 20,
+      ),
+      margin: const EdgeInsets.symmetric(vertical: 8),
+      child: childTextField,
+    );
+  }
+}
+
+
+
+//======================================
+// TextButton(
+//                 onPressed: () {
+                  // final email = _emailController.text;
+                  // BlocProvider.of<AuthBloc>(context)
+                  //     .add(AuthEventForgotPassword(email: email));
+//                 },
+//                 child: const Text("Send Me Password Reset Link"),
+//               ),
+//               TextButton(
+//                 onPressed: () {
+//                   context.read<AuthBloc>().add(const AuthEventLogOut());
+//                 },
+//                 child: const Text("Back to Login Page"),
+//               ),

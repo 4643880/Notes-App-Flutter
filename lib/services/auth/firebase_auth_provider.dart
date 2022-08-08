@@ -114,11 +114,11 @@ class FirebaseAuthProvider implements AuthProvider {
       await FirebaseAuth.instance.sendPasswordResetEmail(email: toEmail);
     } on FirebaseAuthException catch (e) {
       switch (e.code) {
-        case 'firebase_auth/invalid-email':
+        case 'invalid-email':
           throw InvalidEmailAuthException();
-        case 'firebase_auth/user-not-found':
+        case 'user-not-found':
           throw UserNotFoundAuthException();
-        default: 
+        default:         
           throw GenericAuthException();
       }
     } catch (e) {

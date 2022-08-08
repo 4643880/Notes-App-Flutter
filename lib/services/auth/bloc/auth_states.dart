@@ -65,9 +65,13 @@ class AuthStateForgotPassword extends AuthState {
     required bool isLoading,
   }) : super(isLoading: isLoading);
 }
-// class AuthStateForError extends AuthState{
-//   final Exception? exception;
 
-//   AuthStateForError({this.exception});
+class AuthStateLoggingIn extends AuthState {
+  const AuthStateLoggingIn({required bool isLoading})
+      : super(isLoading: isLoading);
+}
 
-// }
+class AuthStateWelcome extends AuthState {
+  const AuthStateWelcome({required bool isLoading})
+      : super(isLoading: isLoading);
+}

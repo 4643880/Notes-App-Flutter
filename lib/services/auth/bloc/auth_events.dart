@@ -20,7 +20,6 @@ class AuthEventLogIn extends AuthEvent {
   });
 }
 
-
 class AuthEventLogOut extends AuthEvent {
   const AuthEventLogOut();
 }
@@ -29,21 +28,26 @@ class AuthEventSendVerificationEmail extends AuthEvent {
   const AuthEventSendVerificationEmail();
 }
 
-
-class AuthEventRegister extends AuthEvent{
+class AuthEventRegister extends AuthEvent {
   final String email;
   final String password;
 
   const AuthEventRegister({required this.email, required this.password});
 }
 
-
-class AuthEventShouldCreateAccountOrShouldRegister extends AuthEvent{
+class AuthEventShouldCreateAccountOrShouldRegister extends AuthEvent {
   const AuthEventShouldCreateAccountOrShouldRegister();
 }
 
-
-class AuthEventForgotPassword extends AuthEvent{
+class AuthEventForgotPassword extends AuthEvent {
   final String? email;
   const AuthEventForgotPassword({this.email});
+}
+
+class AuthEventLoggingIn extends AuthEvent {
+  const AuthEventLoggingIn();
+}
+
+class AuthEventWelcome extends AuthEvent {
+  const AuthEventWelcome();
 }

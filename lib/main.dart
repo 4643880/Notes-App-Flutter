@@ -5,7 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mynotes/constants/routes.dart';
 import 'package:mynotes/screens/home_page.dart';
 import 'package:mynotes/screens/home_page_bloc.dart';
-import 'package:mynotes/screens/user_interface/screens/constants.dart';
+import 'package:mynotes/constants/constants.dart';
 import 'package:mynotes/screens/user_interface/screens/email_verification/email_verify_screen.dart';
 import 'package:mynotes/screens/user_interface/screens/forgot_password/forgot_password_screen.dart';
 import 'package:mynotes/screens/user_interface/screens/login/login_screen.dart';
@@ -38,25 +38,27 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      // useInheritedMediaQuery: true,
-      // locale: DevicePreview.locale(context),
-      // builder: DevicePreview.appBuilder,
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        primaryColor: kPrimaryColor,
-        scaffoldBackgroundColor: Colors.white
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(create: (context) => AuthBloc(provider: FirebaseAuthProvider()),),        
+      ],
+      child: MaterialApp(
+        debugShowCheckedModeBanner: false,
+        // useInheritedMediaQuery: true,
+        // locale: DevicePreview.locale(context),
+        // builder: DevicePreview.appBuilder,
+        title: 'MyNotes',
+        theme: ThemeData(
+          primaryColor: kPrimaryColor,
+          scaffoldBackgroundColor: Colors.white
+        ),
+        // home: const LoginScreen(),
+        routes: {
+          "/": (context) => const HomePage(),
+          notesRoute: (context) => const NotesView(),
+          createUpdateNoteRoute: (context) => const CreateUpdateNoteView(),
+        },
       ),
-      home: const LoginScreen(),
-      // routes: {
-      //   "/": (context) => BlocProvider<AuthBloc>(
-      //         create: (context) => AuthBloc(provider: FirebaseAuthProvider()),
-      //         child: const HomePage(),
-      //       ),
-      //   notesRoute: (context) => const NotesView(),
-      //   createUpdateNoteRoute: (context) => const CreateUpdateNoteView(),
-      // },
     );
   }
 }

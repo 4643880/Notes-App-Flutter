@@ -7,7 +7,6 @@ import 'package:mynotes/services/auth/bloc/auth_states.dart';
 import 'package:mynotes/services/auth/firebase_auth_provider.dart';
 import 'dart:developer' as devtools show log;
 
-
 class AuthBloc extends Bloc<AuthEvent, AuthState> {
   AuthBloc({required FirebaseAuthProvider provider})
       : super(const AuthStateInitial(isLoading: true)) {
@@ -82,7 +81,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         await provider.createUser(
           email: email,
           password: password,
-        );  
+        );
         await provider.sendEmailVerification();
         emit(const AuthStateNeedsVerification(isLoading: false));
       } on Exception catch (e) {
@@ -122,16 +121,15 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         await provider.sendPasswordReset(toEmail: gettingEmail);
         didSendEmail = true;
         exception = null;
-        
       } on Exception catch (e) {
         didSendEmail = false;
-        exception = e;        
+        exception = e;
       }
       emit(AuthStateForgotPassword(
-          exception: exception,
-          hasSentEmail: didSendEmail,
-          isLoading: false,
-        ));
+        exception: exception,
+        hasSentEmail: didSendEmail,
+        isLoading: false,
+      ));
     });
 
     on<AuthEventShouldCreateAccountOrShouldRegister>((event, emit) {
@@ -139,6 +137,14 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         null,
         isLoading: false,
       ));
+    });
+
+    on<AuthEventLoggingIn>((event, emit) {
+      emit(const AuthStateLoggingIn(isLoading: false));
+    });
+
+    on<AuthEventWelcome>((event, emit) {
+      emit(const AuthStateWelcome(isLoading: false));
     });
   }
 }

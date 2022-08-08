@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mynotes/constants/constants.dart';
 import 'package:mynotes/services/cloud/cloud_note.dart';
 import 'package:mynotes/utilities/dialog/delete_dialog.dart';
 
@@ -19,31 +20,49 @@ class NotesListView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListView.builder(
+      physics: const BouncingScrollPhysics(
+        parent: AlwaysScrollableScrollPhysics(),
+      ),
       itemCount: notes.length,
       itemBuilder: (BuildContext context, int index) {
         final getNote = notes.elementAt(index);
-        return ListTile(
-          onTap: () {
-            onTap(getNote);
-          },
-          title: Text(
-            getNote.text,
-            maxLines: 1,
-            softWrap: true,
-            overflow: TextOverflow.ellipsis,
+        return Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(15),
+            child: Container(
+              color: kPrimaryLightColor,
+              child: ListTile(
+                onTap: () {
+                  onTap(getNote);
+                },
+                title: Text(
+                  getNote.text,
+                  maxLines: 1,
+                  softWrap: true,
+                  overflow: TextOverflow.ellipsis,
+                  style: const TextStyle(
+                    color: Colors.black,
+                  ),
+                ),
+                trailing: IconButton(
+                    onPressed: () async {
+                      final shouldDelete = await showDeleteDialog(
+                        context,
+                        "Delete",
+                        "Are you sure you want to delete this note?",
+                      );
+                      if (shouldDelete == true) {
+                        onDeleteNote(getNote);
+                      }
+                    },
+                    icon: const Icon(
+                      Icons.delete,
+                      color: kPrimaryColor,
+                    )),
+              ),
+            ),
           ),
-          trailing: IconButton(
-              onPressed: () async {
-                final shouldDelete = await showDeleteDialog(
-                  context,
-                  "Delete",
-                  "Are you sure you want to delete this note?",
-                );
-                if (shouldDelete == true) {
-                  onDeleteNote(getNote);
-                }
-              },
-              icon: const Icon(Icons.delete)),
         );
       },
     );
