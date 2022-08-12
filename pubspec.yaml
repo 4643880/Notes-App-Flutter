@@ -34,8 +34,6 @@ dependencies:
   firebase_analytics: ^9.1.4
   firebase_auth: ^3.3.13
   firebase_core: ^1.14.0
-  flutter:
-    sdk: flutter
   flutter_bloc: ^8.0.1
   flutter_launcher_icons: ^0.9.3
   flutter_svg: ^1.0.0
@@ -43,14 +41,18 @@ dependencies:
   path_provider: ^2.0.9
   share_plus: ^4.0.8
   sqflite: ^2.0.2+1
+  intl: ^0.17.0 # Add this line
+
+  flutter:
+    sdk: flutter
+  flutter_localizations: # Add this line
+    sdk: flutter
+
+  
+
+  
 
 dev_dependencies:
-
-  # The "flutter_lints" package below contains a set of recommended lints to
-  # encourage good coding practices. The lint set provided by the package is
-  # activated in the `analysis_options.yaml` file located at the root of your
-  # package. See that file for information about deactivating specific lint
-  # rules and activating additional ones.
   flutter_lints: ^1.0.1
   flutter_test:
     sdk: flutter
@@ -59,7 +61,9 @@ dev_dependencies:
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
 # The following section is specific to Flutter.
-flutter:
+flutter:  
+  
+  generate: true # Add this line
 
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in

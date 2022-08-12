@@ -2,12 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:mynotes/constants/constants.dart';
-import 'package:mynotes/constants/routes.dart';
-import 'package:mynotes/services/auth/auth_service.dart';
+import 'package:mynotes/extensions/buildcontext/my_localization.dart';
 import 'package:mynotes/services/auth/bloc/auth_bloc.dart';
 import 'package:mynotes/services/auth/bloc/auth_events.dart';
-import 'package:mynotes/services/auth/bloc/auth_states.dart';
-import 'package:mynotes/utilities/dialog/error_dialog.dart';
 import 'package:mynotes/views/components/rounded_button.dart';
 
 class VerifyEmailView extends StatefulWidget {
@@ -24,8 +21,6 @@ class _VerifyEmailViewState extends State<VerifyEmailView> {
   }
 }
 
-
-
 class EmailVerificationScreen extends StatelessWidget {
   const EmailVerificationScreen({Key? key}) : super(key: key);
 
@@ -36,8 +31,6 @@ class EmailVerificationScreen extends StatelessWidget {
     );
   }
 }
-
-
 
 class EmailVerificationBackground extends StatelessWidget {
   final Widget child;
@@ -78,8 +71,6 @@ class EmailVerificationBackground extends StatelessWidget {
   }
 }
 
-
-
 class EmailVerificationBody extends StatelessWidget {
   const EmailVerificationBody({Key? key}) : super(key: key);
 
@@ -94,9 +85,9 @@ class EmailVerificationBody extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Text(
-              "Please Verify Your Email",
-              style: TextStyle(
+            Text(
+              context.myloc.email_verify_page_title,
+              style: const TextStyle(
                 color: kPrimaryColor,
                 fontSize: 25,
                 fontWeight: FontWeight.w900,
@@ -109,10 +100,10 @@ class EmailVerificationBody extends StatelessWidget {
             SizedBox(
               height: size.height * 0.04,
             ),
-            const Text(
-              "If you did'nt receive email yet. Please click the button below.",
+            Text(
+              context.myloc.email_verify_page_email_message,
               textAlign: TextAlign.center,
-              style: TextStyle(
+              style: const TextStyle(
                 color: kPrimaryColor,
                 fontSize: 18,
                 fontWeight: FontWeight.bold,
@@ -123,9 +114,11 @@ class EmailVerificationBody extends StatelessWidget {
             ),
             RoundedButton(
               onTap: () {
-                context.read<AuthBloc>().add(const AuthEventSendVerificationEmail());
+                context
+                    .read<AuthBloc>()
+                    .add(const AuthEventSendVerificationEmail());
               },
-              title: "Send Me",
+              title: context.myloc.email_verify_page_sendMe_button,
               buttonColor: kPrimaryColor,
               titleColor: Colors.white,
               paddingForRoundedButton: MaterialStateProperty.all(
@@ -136,7 +129,7 @@ class EmailVerificationBody extends StatelessWidget {
               onTap: () {
                 context.read<AuthBloc>().add(const AuthEventLogOut());
               },
-              title: "Restart",
+              title: context.myloc.email_verify_page_restart_button,
               buttonColor: const Color.fromARGB(255, 228, 209, 253),
               titleColor: kPrimaryColor,
               paddingForRoundedButton: MaterialStateProperty.all(

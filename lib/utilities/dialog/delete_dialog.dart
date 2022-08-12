@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mynotes/extensions/buildcontext/my_localization.dart';
 import 'package:mynotes/utilities/dialog/generic_dialog.dart';
 
 Future<bool> showDeleteDialog(
@@ -12,8 +13,8 @@ Future<bool> showDeleteDialog(
     content: desc,
     optionsBuilder: () {
       return {
-        "Cancel": false,
-        "Yes": true,
+        context.myloc.cancel_button: false,
+        context.myloc.yes_button: true,
       };
     },
   ).then((value) => value ?? false);

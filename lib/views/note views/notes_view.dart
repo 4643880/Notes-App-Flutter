@@ -2,13 +2,18 @@ import 'package:flutter/material.dart';
 import 'package:mynotes/constants/constants.dart';
 import 'package:mynotes/constants/routes.dart';
 import 'package:mynotes/enums/menu_action.dart';
+import 'package:mynotes/extensions/buildcontext/my_localization.dart';
 import 'package:mynotes/services/auth/auth_service.dart';
 import 'package:mynotes/services/cloud/cloud_note.dart';
 import 'package:mynotes/services/cloud/firebase_cloud_storage.dart';
-import 'package:mynotes/services/crud/notes_service.dart';
-import 'dart:developer' as devtools show log;
-
 import 'package:mynotes/views/note%20views/notes_list_view.dart';
+
+// Extension for Counting Notes
+extension Count on Stream {
+  get getLength {
+    return map(((event) => event.length));
+  }
+}
 
 class NotesView extends StatefulWidget {
   const NotesView({Key? key}) : super(key: key);
@@ -36,7 +41,16 @@ class _NotesViewState extends State<NotesView> {
       appBar: AppBar(
         elevation: 0,
         backgroundColor: kPrimaryColor,
-        title: const Text("Notes"),
+        title: StreamBuilder(
+            stream: _notesService.allNotes(ownerUserId: ownerUserId).getLength,
+            builder: (context, snapshot) {
+              if (snapshot.hasData) {
+                final counter = snapshot.data as int;
+                return Text(context.myloc.notes_page_title(counter));
+              } else {
+                return const Text("");
+              }
+            }),
         actions: [
           IconButton(
               onPressed: () {

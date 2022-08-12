@@ -2,10 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:mynotes/constants/constants.dart';
+import 'package:mynotes/extensions/buildcontext/my_localization.dart';
 import 'package:mynotes/services/auth/bloc/auth_bloc.dart';
 import 'package:mynotes/services/auth/bloc/auth_events.dart';
-import 'package:mynotes/views/auth%20views/login_view.dart';
-import 'package:mynotes/views/auth%20views/register_view.dart';
 import 'package:mynotes/views/components/rounded_button.dart';
 
 class WelcomeView extends StatelessWidget {
@@ -73,9 +72,9 @@ class WelcomePageBody extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Text(
-              "Welcome to MyNotes",
-              style: TextStyle(
+            Text(
+              context.myloc.welcome_page_title,
+              style: const TextStyle(
                 color: kPrimaryColor,
                 fontSize: 25,
                 fontWeight: FontWeight.w900,
@@ -95,7 +94,7 @@ class WelcomePageBody extends StatelessWidget {
               onTap: () {
                 context.read<AuthBloc>().add(const AuthEventLoggingIn());
               },
-              title: "LOGIN",
+              title: context.myloc.welcome_page_login_button,
               buttonColor: kPrimaryColor,
               titleColor: Colors.white,
               paddingForRoundedButton: MaterialStateProperty.all(
@@ -108,7 +107,7 @@ class WelcomePageBody extends StatelessWidget {
                       const AuthEventShouldCreateAccountOrShouldRegister(),
                     );
               },
-              title: "SIGNUP",
+              title: context.myloc.welcome_page_signup_button,
               buttonColor: kPrimaryLightColor,
               titleColor: kPrimaryColor,
               paddingForRoundedButton: MaterialStateProperty.all(

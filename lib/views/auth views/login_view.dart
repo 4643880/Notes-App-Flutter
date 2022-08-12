@@ -2,17 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:mynotes/constants/constants.dart';
-import 'package:mynotes/constants/routes.dart';
+import 'package:mynotes/extensions/buildcontext/my_localization.dart';
 import 'package:mynotes/services/auth/auth_exceptions.dart';
-import 'package:mynotes/services/auth/auth_provider.dart';
-import 'package:mynotes/services/auth/auth_service.dart';
 import 'package:mynotes/services/auth/bloc/auth_bloc.dart';
 import 'package:mynotes/services/auth/bloc/auth_events.dart';
 import 'package:mynotes/services/auth/bloc/auth_states.dart';
-import 'package:mynotes/services/crud/notes_service.dart';
 import 'package:mynotes/utilities/dialog/error_dialog.dart';
-import 'package:mynotes/utilities/dialog/loading_dialog.dart';
-import 'package:mynotes/views/auth%20views/verify_email_view.dart';
 import 'dart:developer' as devtools show log;
 
 import 'package:mynotes/views/components/rounded_button.dart';
@@ -32,14 +27,29 @@ class _LoginViewState extends State<LoginView> {
         if (state is AuthStateLoggedOut) {
           devtools.log(state.exception.toString());
           if (state.exception is UserNotFoundAuthException) {
-            await showErrorDialog(context, "User Not Found",
-                "No user found for that email. Please try again.");
+            await showErrorDialog(
+              context,
+              context.myloc
+                  .login_page_userNotFoundAuthException_showErrorDialog_title,
+              context.myloc
+                  .login_page_userNotFoundAuthException_showErrorDialog_desc,
+            );
           } else if (state.exception is WrongPasswordAuthException) {
-            await showErrorDialog(context, "Wrong Password",
-                "Wrong password provided for that user. Please try again.");
+            await showErrorDialog(
+              context,
+              context.myloc
+                  .login_page_wrongPasswordAuthException_showErrorDialog_title,
+              context.myloc
+                  .login_page_wrongPasswordAuthException_showErrorDialog_desc,
+            );
           } else if (state.exception is GenericAuthException) {
-            await showErrorDialog(context, "Something Went Wrong",
-                "Error:  Authentication Error");
+            await showErrorDialog(
+              context,
+              context
+                  .myloc.login_page_genericAuthException_showErrorDialog_title,
+              context
+                  .myloc.login_page_genericAuthException_showErrorDialog_desc,
+            );
           }
         }
       },
@@ -101,9 +111,9 @@ class _LoginPageBodyState extends State<LoginPageBody> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Text(
-              "LOGIN",
-              style: TextStyle(
+            Text(
+              context.myloc.login_page_title,
+              style: const TextStyle(
                 color: kPrimaryColor,
                 fontSize: 25,
                 fontWeight: FontWeight.w900,
@@ -122,13 +132,13 @@ class _LoginPageBodyState extends State<LoginPageBody> {
                 autocorrect: false,
                 autofocus: false,
                 keyboardType: TextInputType.emailAddress,
-                decoration: const InputDecoration(
+                decoration: InputDecoration(
                     border: InputBorder.none,
-                    icon: Icon(
+                    icon: const Icon(
                       Icons.email,
                       color: kPrimaryColor,
                     ),
-                    hintText: "Enter Your Email Address"),
+                    hintText: context.myloc.login_page_email_field),
               ),
             ),
             TextFieldContainer(
@@ -164,8 +174,8 @@ class _LoginPageBodyState extends State<LoginPageBody> {
                     // Icons.visibility,
                     // color: kPrimaryColor,
                   ),
-                  hintText: "Enter Your Password",
-                  hintStyle: TextStyle(),
+                  hintText: context.myloc.login_page_password_field,
+                  hintStyle: const TextStyle(),
                 ),
               ),
             ),
@@ -180,7 +190,7 @@ class _LoginPageBodyState extends State<LoginPageBody> {
                   ),
                 );
               },
-              title: "LOGIN",
+              title: context.myloc.login_page_login_button,
               buttonColor: kPrimaryColor,
               titleColor: Colors.white,
               paddingForRoundedButton: MaterialStateProperty.all(
@@ -193,16 +203,16 @@ class _LoginPageBodyState extends State<LoginPageBody> {
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const Text("Don't have an Account?  "),
+                Text(context.myloc.login_page_dont_have_acct),
                 InkWell(
                   onTap: () {
                     context.read<AuthBloc>().add(
                           const AuthEventShouldCreateAccountOrShouldRegister(),
                         );
                   },
-                  child: const Text(
-                    "SIGNUP ",
-                    style: TextStyle(
+                  child: Text(
+                    context.myloc.login_page_signUp_text_button,
+                    style: const TextStyle(
                         color: kPrimaryColor, fontWeight: FontWeight.bold),
                   ),
                 ),
@@ -217,9 +227,9 @@ class _LoginPageBodyState extends State<LoginPageBody> {
                       const AuthEventForgotPassword(),
                     );
               },
-              child: const Text(
-                "Forgot Password ?",
-                style: TextStyle(
+              child: Text(
+                context.myloc.login_page_forgot_password,
+                style: const TextStyle(
                     color: kPrimaryColor, fontWeight: FontWeight.bold),
               ),
             ),

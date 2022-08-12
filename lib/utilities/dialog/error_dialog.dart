@@ -1,4 +1,5 @@
 import 'package:flutter/cupertino.dart';
+import 'package:mynotes/extensions/buildcontext/my_localization.dart';
 import 'package:mynotes/utilities/dialog/generic_dialog.dart';
 
 Future<void> showErrorDialog(
@@ -10,8 +11,8 @@ Future<void> showErrorDialog(
     context: context,
     title: title,
     content: desc,
-    optionsBuilder: (){
-      return {"Ok" : null};
+    optionsBuilder: () {
+      return {context.myloc.ok_button: null};
     },
   );
 }

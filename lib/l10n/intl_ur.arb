@@ -1,0 +1,98 @@
+{
+"ok_button": "ٹھیک ہے",
+"cancel_button": "منسوخ کریں",
+"yes_button": "ہاں",
+"logout_button": "لاگ آؤٹ",
+
+
+
+"welcome_page_login_button": "لاگ ان",
+"welcome_page_signup_button": "سائن اپ",
+"welcome_page_title": "مائی نوٹس ایپ میں خوش آمدید",
+
+
+
+"login_page_title": "لاگ ان",
+"login_page_email_field": "اپنا ای میل ایڈریس درج کریں",
+"login_page_password_field": "اپنا پاس ورڈ درج کریں",
+"login_page_login_button": "لاگ ان",
+"login_page_dont_have_acct": "کیا اکاؤنٹ نہیں ہے؟",
+"login_page_signUp_text_button": "سائن اپ",
+"login_page_forgot_password": "پاس ورڈ بھول گئے؟",
+"login_page_userNotFoundAuthException_showErrorDialog_title": "صارف نہیں ملا",
+"login_page_userNotFoundAuthException_showErrorDialog_desc": "اس ای میل کے لیے کوئی صارف نہیں ملا۔ براہ کرم دوبارہ کوشش کریں۔",
+"login_page_wrongPasswordAuthException_showErrorDialog_title": "غلط پاس ورڈ",
+"login_page_wrongPasswordAuthException_showErrorDialog_desc": "اس صارف کے لیے غلط پاس ورڈ فراہم کیا گیا ہے۔ براہ کرم دوبارہ کوشش کریں۔",
+"login_page_genericAuthException_showErrorDialog_title": "کچھ غلط ہو گیا",
+"login_page_genericAuthException_showErrorDialog_desc": "خرابی: توثیق میں خرابی",
+
+
+
+
+"signup_page_title": "سائن اپ",
+"signup_page_email_field": "اپنا ای میل ایڈریس درج کریں",
+"signup_page_password_field": "اپنا پاس ورڈ درج کریں",
+"signup_page_signup_button": "سائن اپ",
+"signup_page_already_have_acct": "پہلے سے ہی اکاؤنٹ ہے؟",
+"signup_page_login_text_button": "لاگ ان",
+"signup_page_orDivder": "یا",
+"signup_page_authStateNeedsVerification_showErrorDialog_title": "اپنے ای میل کی تصدیق کریں",
+"signup_page_authStateNeedsVerification_showErrorDialog_desc": "ہم نے تصدیقی ای میل بھیج دی ہے۔",
+"signup_page_weakPasswordAuthException_showErrorDialog_title": "کمزور پاس ورڈ",
+"signup_page_weakPasswordAuthException_showErrorDialog_desc": "جو پاس ورڈ فراہم کیا گیا ہے وہ بہت کمزور ہے۔",
+"signup_page_emailAlreadyInUseAuthException_showErrorDialog_title": "ای میل پہلے سے استعمال میں ہے",
+"signup_page_emailAlreadyInUseAuthException_showErrorDialog_desc": "اس ای میل کے لیے اکاؤنٹ پہلے سے موجود ہے۔",
+"signup_page_invalidEmailAuthException_showErrorDialog_title": "غلط ای میل پتہ",
+"signup_page_invalidEmailAuthException_showErrorDialog_desc": "براہ کرم درست ای میل ایڈریس درج کریں یہ غلط ہے",
+"signup_page_genericAuthException_showErrorDialog_title": "کچھ غلط ہو گیا",
+"signup_page_genericAuthException_showErrorDialog_desc": "خرابی: رجسٹر کرنے میں ناکام۔",
+
+
+
+
+"forgotPassword_page_title": "پاس ورڈ بھول گیا",
+"forgotPassword_page_email_field": "اپنا ای میل پتہ درج کریں",
+"forgotPassword_page_Send_button": "مجھے تصدیقی لنک بھیجیں",
+"forgotPassword_page_goBack_title": "لاگ ان پیج پر واپس جائیں؟",
+"forgotPassword_page_login_text_button": "لاگ ان",
+"forgotPassword_page_showPasswordResetSentDialog_title": "پاس ورڈ دوبارہ ترتیب دیں",
+"forgotPassword_page_showPasswordResetSentDialog_desc": "اب ہم نے آپ کو پاس ورڈ دوبارہ ترتیب دینے کا لنک بھیجا ہے۔ مزید معلومات کے لیے براہ کرم اپنا ای میل چیک کریں۔",
+"forgotPassword_page_userNotFoundAuthException_showErrorDialog_title": "صارف نہیں ملا",
+"forgotPassword_page_userNotFoundAuthException_showErrorDialog_desc": "اس ای میل کے لیے کوئی صارف نہیں ملا۔ براہ کرم دوبارہ کوشش کریں۔",
+"forgotPassword_page_invalidEmailAuthException_showErrorDialog_title": "غلط ای میل ایڈریس",
+"forgotPassword_page_invalidEmailAuthException_showErrorDialog_desc": "براہ کرم درست ای میل ایڈریس درج کریں یہ غلط ہے۔",
+"forgotPassword_page_genericAuthException_showErrorDialog_title": "کچھ غلط ہوا",
+"forgotPassword_page_genericAuthException_showErrorDialog_desc": "ہم آپ کی درخواست پر کارروائی نہیں کر سکے۔ براہ کرم یقینی بنائیں کہ آپ ایک رجسٹر صارف ہیں۔",
+
+
+
+"showLogOutDialogFunc_title" : "باہر جائیں",
+"showLogOutDialogFunc_desc": "کیا آپ واقعی لاگ آؤٹ کرنا چاہیں گے؟",
+
+
+
+
+"email_verify_page_title": "براہ کرم اپنے ای میل کی تصدیق کریں",
+"email_verify_page_email_message": "اگر آپ کو ابھی تک ای میل موصول نہیں ہوئی ہے۔ براہ کرم نیچے دیئے گئے بٹن پر کلک کریں۔",
+"email_verify_page_sendMe_button": "مجھے بھیجیں",
+"email_verify_page_restart_button": "دوبارہ شروع کریں",
+
+
+
+
+"notes_page_title": "{count, plural, =0{کوئی نوٹ نہیں ہے} =1{1 توٹ} other{ {count} نوٹس} }",
+"@notes_page_title": {
+    "placeholders": {
+        "count": {
+            "type": "int",
+            "example": "3 notes"
+        }
+    }
+},
+
+
+"new_note_page_title": "نوٹ",
+"new_note_page_text_field_label": "یہاں ٹائپ کرنا شروع کریں",
+"new_note_page_showCanNotShareEmptyNoteDialog_title": "شیئرنگ",
+"new_note_page_showCanNotShareEmptyNoteDialog_desc": "آپ خالی نوٹ بانٹ نہیں سکتے۔"
+}

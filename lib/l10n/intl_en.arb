@@ -1,0 +1,96 @@
+{    
+    "ok_button": "Ok",
+	"cancel_button": "Cancel",
+	"yes_button": "Yes",
+	"logout_button": "Log out",
+	
+	
+	
+	"welcome_page_login_button": "LOGIN",
+	"welcome_page_signup_button": "SIGNUP",
+	"welcome_page_title": "Welcome to MyNotes",
+	
+	
+	"login_page_title": "LOGIN",
+	"login_page_email_field": "Enter Your Email Address",
+	"login_page_password_field": "Enter Your Password",
+	"login_page_login_button": "LOGIN",
+	"login_page_dont_have_acct": "Don't have an Account? ",
+	"login_page_signUp_text_button": "SIGNUP",
+	"login_page_forgot_password": "Forgot Password ? ",
+	"login_page_userNotFoundAuthException_showErrorDialog_title": "User Not Found",
+	"login_page_userNotFoundAuthException_showErrorDialog_desc": "No user found for that email. Please try again.",
+	"login_page_wrongPasswordAuthException_showErrorDialog_title": "Wrong Password",
+	"login_page_wrongPasswordAuthException_showErrorDialog_desc": "Wrong password provided for that user. Please try again.",
+	"login_page_genericAuthException_showErrorDialog_title": "Something Went Wrong",
+	"login_page_genericAuthException_showErrorDialog_desc": "Error:  Authentication Error",
+	
+	
+	
+	"signup_page_title": "SIGNUP",
+	"signup_page_email_field": "Enter Your Email Address",
+	"signup_page_password_field": "Enter Your Password",
+	"signup_page_signup_button": "SIGNUP",
+	"signup_page_already_have_acct": "Already have an Account? ",
+	"signup_page_login_text_button": "LOGIN",
+	"signup_page_orDivider": "OR",
+	"signup_page_authStateNeedsVerification_showErrorDialog_title": "Verify Your Email",
+	"signup_page_authStateNeedsVerification_showErrorDialog_desc": "We have sent verification email.",
+	"signup_page_weakPasswordAuthException_showErrorDialog_title": "Weak Password",
+	"signup_page_weakPasswordAuthException_showErrorDialog_desc": "The password provided is too weak.",
+	"signup_page_emailAlreadyInUseAuthException_showErrorDialog_title": "Email Already in Use",
+	"signup_page_emailAlreadyInUseAuthException_showErrorDialog_desc": "The account already exists for that email.",
+	"signup_page_invalidEmailAuthException_showErrorDialog_title": "Invalid Email Address",
+	"signup_page_invalidEmailAuthException_showErrorDialog_desc": "Please Enter Correct Email Address it's Invalid",
+	"signup_page_genericAuthException_showErrorDialog_title": "Something Went Wrong",
+	"signup_page_genericAuthException_showErrorDialog_desc": "Error: Failed to register.",
+	
+	
+	
+	"forgotPassword_page_title": "FORGOT PASSWORD",
+	"forgotPassword_page_email_field": "Enter Your Email Address",
+	"forgotPassword_page_Send_button": "Send Me the Verification Link",
+	"forgotPassword_page_goBack_title": "Go back to Login Page?",
+	"forgotPassword_page_login_text_button": "LOGIN",
+	"forgotPassword_page_showPasswordResetSentDialog_title": "Password Reset",
+	"forgotPassword_page_showPasswordResetSentDialog_desc": "We have now sent you a password reset link. Please check your email for more information.",
+	"forgotPassword_page_userNotFoundAuthException_showErrorDialog_title": "User Not Found",	
+	"forgotPassword_page_userNotFoundAuthException_showErrorDialog_desc": "No user found for that email. Please try again.",	
+	"forgotPassword_page_invalidEmailAuthException_showErrorDialog_title": "Invalid Email Address",
+	"forgotPassword_page_invalidEmailAuthException_showErrorDialog_desc": "Please Enter Correct Email Address it's Invalid.",	
+	"forgotPassword_page_genericAuthException_showErrorDialog_title": "Something Went Wrong",
+	"forgotPassword_page_genericAuthException_showErrorDialog_desc": "We could not process your request. Please make sure that you are a register user.",
+
+
+
+    "showLogOutDialogFunc_title" : "Sign Out",
+    "showLogOutDialogFunc_desc": "Are you sure you would like to log out?",
+	
+	
+	
+	"email_verify_page_title": "Please Verify Your Email",
+	"email_verify_page_email_message": "If you did'nt receive email yet. Please click the button below.",
+	"email_verify_page_sendMe_button": "Send Me",
+	"email_verify_page_restart_button": "Restart",
+	
+	
+	
+	"notes_page_title": "{count, plural, =0{No Notes yet} =1{1 Note} other{ {count} Notes} }",
+    "@notes_page_title": {
+        "placeholders": {
+            "count": {
+                "type": "int",
+                "example": "3 notes"
+            }
+        }
+    },
+	
+	
+	
+	"new_note_page_title": "Note",
+	"new_note_page_text_field_label": "Start Typing Here",
+	"new_note_page_showCanNotShareEmptyNoteDialog_title": "Sharing",
+	"new_note_page_showCanNotShareEmptyNoteDialog_desc": "You can not share empty note."
+
+}
+

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:mynotes/constants/constants.dart';
+import 'package:mynotes/extensions/buildcontext/my_localization.dart';
 import 'package:mynotes/services/auth/auth_exceptions.dart';
 import 'package:mynotes/services/auth/bloc/auth_bloc.dart';
 import 'package:mynotes/services/auth/bloc/auth_events.dart';
@@ -28,27 +29,34 @@ class _ForgotPasswordViewState extends State<ForgotPasswordView> {
             // _emailController.clear();
             await showPasswordResetSentDialog(
               context: context,
-              title: "Password Reset",
-              desc:
-                  "We have now sent you a password reset link. Please check your email for more information.",
+              title: context
+                  .myloc.forgotPassword_page_showPasswordResetSentDialog_title,
+              desc: context
+                  .myloc.forgotPassword_page_showPasswordResetSentDialog_desc,
             );
           } else if (state.exception is UserNotFoundAuthException) {
             await showErrorDialog(
               context,
-              "User Not Found",
-              "No user found for that email. Please try again.",
+              context.myloc
+                  .forgotPassword_page_userNotFoundAuthException_showErrorDialog_title,
+              context.myloc
+                  .forgotPassword_page_userNotFoundAuthException_showErrorDialog_desc,
             );
           } else if (state.exception is InvalidEmailAuthException) {
             await showErrorDialog(
               context,
-              "Invalid Email Address",
-              "Please Enter Correct Email Address it's Invalid",
+              context.myloc
+                  .forgotPassword_page_invalidEmailAuthException_showErrorDialog_title,
+              context.myloc
+                  .forgotPassword_page_invalidEmailAuthException_showErrorDialog_desc,
             );
           } else if (state.exception is GenericAuthException) {
             await showErrorDialog(
               context,
-              "Something Went Wrong",
-              "We could not process your request. Please make sure that you are a register user.",
+              context.myloc
+                  .forgotPassword_page_genericAuthException_showErrorDialog_title,
+              context.myloc
+                  .forgotPassword_page_genericAuthException_showErrorDialog_desc,
             );
           }
         }
@@ -141,9 +149,9 @@ class _ForgotPaswordBodyState extends State<ForgotPaswordBody> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Text(
-              "FORGOT PASSWORD",
-              style: TextStyle(
+            Text(
+              context.myloc.forgotPassword_page_title,
+              style: const TextStyle(
                 color: kPrimaryColor,
                 fontSize: 25,
                 fontWeight: FontWeight.w900,
@@ -160,13 +168,13 @@ class _ForgotPaswordBodyState extends State<ForgotPaswordBody> {
               childTextField: TextField(
                 controller: _emailController,
                 keyboardType: TextInputType.emailAddress,
-                decoration: const InputDecoration(
+                decoration: InputDecoration(
                     border: InputBorder.none,
-                    icon: Icon(
+                    icon: const Icon(
                       Icons.email,
                       color: kPrimaryColor,
                     ),
-                    hintText: "Enter Your Email Address"),
+                    hintText: context.myloc.forgotPassword_page_email_field),
               ),
             ),
             RoundedButton(
@@ -175,7 +183,7 @@ class _ForgotPaswordBodyState extends State<ForgotPaswordBody> {
                 BlocProvider.of<AuthBloc>(context)
                     .add(AuthEventForgotPassword(email: email));
               },
-              title: "Send Me the Verification Link",
+              title: context.myloc.forgotPassword_page_Send_button,
               buttonColor: kPrimaryColor,
               titleColor: Colors.white,
               paddingForRoundedButton: MaterialStateProperty.all(
@@ -188,16 +196,16 @@ class _ForgotPaswordBodyState extends State<ForgotPaswordBody> {
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const Text("Go back to Login Page?  "),
+                Text(context.myloc.forgotPassword_page_goBack_title),
                 InkWell(
                   onTap: () {
                     context.read<AuthBloc>().add(
                           const AuthEventLoggingIn(),
                         );
                   },
-                  child: const Text(
-                    "LOGIN ",
-                    style: TextStyle(
+                  child: Text(
+                    context.myloc.forgotPassword_page_login_text_button,
+                    style: const TextStyle(
                         color: kPrimaryColor, fontWeight: FontWeight.bold),
                   ),
                 ),

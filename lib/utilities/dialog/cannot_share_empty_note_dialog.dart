@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mynotes/extensions/buildcontext/my_localization.dart';
 import 'package:mynotes/utilities/dialog/generic_dialog.dart';
 
 Future<void> showCanNotShareEmptyNoteDialog(
@@ -11,7 +12,7 @@ Future<void> showCanNotShareEmptyNoteDialog(
     title: title,
     content: desc,
     optionsBuilder: () {
-      return {"OK": null};
+      return {context.myloc.ok_button: null};
     },
   );
 }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mynotes/extensions/buildcontext/my_localization.dart';
 import 'package:mynotes/utilities/dialog/generic_dialog.dart';
 
 Future<bool> showLogOutDialogFunc(
@@ -10,8 +11,11 @@ Future<bool> showLogOutDialogFunc(
     context: context,
     title: title,
     content: desc,
-    optionsBuilder: (){
-      return {"Cancel" : false, "Log Out" : true};
+    optionsBuilder: () {
+      return {
+        context.myloc.cancel_button: false,
+        context.myloc.logout_button: true
+      };
     },
   ).then((value) => value ?? false);
 }

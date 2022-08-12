@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:mynotes/constants/constants.dart';
+import 'package:mynotes/extensions/buildcontext/my_localization.dart';
 import 'package:mynotes/services/auth/auth_service.dart';
 import 'package:mynotes/services/cloud/cloud_note.dart';
-import 'package:mynotes/services/cloud/cloud_storage_exceptions.dart';
 import 'package:mynotes/services/cloud/firebase_cloud_storage.dart';
 import 'package:mynotes/utilities/dialog/cannot_share_empty_note_dialog.dart';
 import 'dart:developer' as devtools show log;
@@ -98,14 +98,18 @@ class _CreateUpdateNoteViewState extends State<CreateUpdateNoteView> {
       backgroundColor: kPrimaryLightColor,
       appBar: AppBar(
         backgroundColor: kPrimaryColor,
-        title: const Text("Note"),
+        title: Text(context.myloc.new_note_page_title),
         actions: [
           IconButton(
             onPressed: () async {
               final text = _textController.text;
               if (_note == null || text.isEmpty) {
                 await showCanNotShareEmptyNoteDialog(
-                    context, "Sharing", "You can not share empty note.");
+                    context,
+                    context.myloc
+                        .new_note_page_showCanNotShareEmptyNoteDialog_title,
+                    context.myloc
+                        .new_note_page_showCanNotShareEmptyNoteDialog_desc);
               } else {
                 Share.share(text);
               }
@@ -135,14 +139,14 @@ class _CreateUpdateNoteViewState extends State<CreateUpdateNoteView> {
                     color: kPrimaryColor,
                     child: Padding(
                       padding: const EdgeInsets.all(32.0),
-                      child: TextField(  
-                        style: const TextStyle(color: Colors.white),                      
+                      child: TextField(
+                        style: const TextStyle(color: Colors.white),
                         controller: _textController,
                         keyboardType: TextInputType.multiline,
                         maxLines: null,
-                        decoration: const InputDecoration(
-                          hintText: "Start Typing Here",
-                          hintStyle: TextStyle(color: Colors.white),
+                        decoration: InputDecoration(
+                          hintText: context.myloc.new_note_page_text_field_label,
+                          hintStyle: const TextStyle(color: Colors.white),
                           border: InputBorder.none,
                         ),
                       ),

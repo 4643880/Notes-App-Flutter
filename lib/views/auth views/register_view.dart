@@ -2,9 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:mynotes/constants/constants.dart';
-import 'package:mynotes/constants/routes.dart';
+import 'package:mynotes/extensions/buildcontext/my_localization.dart';
 import 'package:mynotes/services/auth/auth_exceptions.dart';
-import 'package:mynotes/services/auth/auth_service.dart';
 import 'package:mynotes/services/auth/bloc/auth_bloc.dart';
 import 'package:mynotes/services/auth/bloc/auth_events.dart';
 import 'package:mynotes/services/auth/bloc/auth_states.dart';
@@ -26,33 +25,43 @@ class _RegisterViewState extends State<RegisterView> {
         if (state is AuthStateNeedsVerification) {
           await showErrorDialog(
             context,
-            "Verify Your Email",
-            "We have sent verification email.",
+            context.myloc
+                .signup_page_authStateNeedsVerification_showErrorDialog_title,
+            context.myloc
+                .signup_page_authStateNeedsVerification_showErrorDialog_desc,
           );
         } else if (state is AuthStateRegistering) {
           if (state.exception is WeakPasswordAuthException) {
             await showErrorDialog(
               context,
-              "Weak Password",
-              "The password provided is too weak.",
+              context.myloc
+                  .signup_page_weakPasswordAuthException_showErrorDialog_title,
+              context.myloc
+                  .signup_page_weakPasswordAuthException_showErrorDialog_desc,
             );
           } else if (state.exception is EmailAlreadyInUseAuthException) {
             await showErrorDialog(
               context,
-              "Email Already in Use",
-              "The account already exists for that email.",
+              context.myloc
+                  .signup_page_emailAlreadyInUseAuthException_showErrorDialog_title,
+              context.myloc
+                  .signup_page_emailAlreadyInUseAuthException_showErrorDialog_desc,
             );
           } else if (state.exception is InvalidEmailAuthException) {
             await showErrorDialog(
               context,
-              "Invalid Email Address",
-              "Please Enter Correct Email Address it's Invalid",
+              context.myloc
+                  .signup_page_invalidEmailAuthException_showErrorDialog_title,
+              context.myloc
+                  .signup_page_invalidEmailAuthException_showErrorDialog_desc,
             );
           } else if (state.exception is GenericAuthException) {
             await showErrorDialog(
               context,
-              "Something Went Wrong",
-              "Error: Failed to register.",
+              context
+                  .myloc.signup_page_genericAuthException_showErrorDialog_title,
+              context
+                  .myloc.signup_page_genericAuthException_showErrorDialog_desc,
             );
           }
         }
@@ -156,9 +165,9 @@ class _SignUpBodyState extends State<SignUpBody> {
             SizedBox(
               height: size.height * 0.025,
             ),
-            const Text(
-              "SIGNUP",
-              style: TextStyle(
+            Text(
+              context.myloc.signup_page_title,
+              style: const TextStyle(
                 color: kPrimaryColor,
                 fontSize: 25,
                 fontWeight: FontWeight.w900,
@@ -178,13 +187,13 @@ class _SignUpBodyState extends State<SignUpBody> {
                 autocorrect: false,
                 autofocus: false,
                 keyboardType: TextInputType.emailAddress,
-                decoration: const InputDecoration(
+                decoration: InputDecoration(
                     border: InputBorder.none,
-                    icon: Icon(
+                    icon: const Icon(
                       Icons.email,
                       color: kPrimaryColor,
                     ),
-                    hintText: "Enter Your Email Address"),
+                    hintText: context.myloc.signup_page_email_field),
               ),
             ),
             TextFieldContainer(
@@ -216,7 +225,7 @@ class _SignUpBodyState extends State<SignUpBody> {
                             color: kPrimaryColor,
                           ),
                   ),
-                  hintText: "Enter Your Password",
+                  hintText: context.myloc.signup_page_password_field,
                   hintStyle: const TextStyle(),
                 ),
               ),
@@ -233,7 +242,7 @@ class _SignUpBodyState extends State<SignUpBody> {
                       ),
                     );
               },
-              title: "SIGNUP",
+              title: context.myloc.signup_page_signup_button,
               buttonColor: kPrimaryColor,
               titleColor: Colors.white,
               paddingForRoundedButton: MaterialStateProperty.all(
@@ -246,15 +255,15 @@ class _SignUpBodyState extends State<SignUpBody> {
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const Text("Already have an Account?  "),
+                Text(context.myloc.signup_page_already_have_acct),
                 InkWell(
                     onTap: () {
                       BlocProvider.of<AuthBloc>(context)
                           .add(const AuthEventLoggingIn());
                     },
-                    child: const Text(
-                      "LOGIN ",
-                      style: TextStyle(
+                    child: Text(
+                      context.myloc.signup_page_login_text_button,
+                      style: const TextStyle(
                           color: kPrimaryColor, fontWeight: FontWeight.bold),
                     )),
               ],
@@ -332,22 +341,22 @@ class OrDivider extends StatelessWidget {
     return Container(
       width: size.width * 0.8,
       child: Row(
-        children: const [
-          Expanded(
+        children: [
+          const Expanded(
             child: Divider(
               color: Color(0xffd9d9d9),
               thickness: 2,
             ),
           ),
           Padding(
-            padding: EdgeInsets.symmetric(horizontal: 8),
+            padding: const EdgeInsets.symmetric(horizontal: 8),
             child: Text(
-              "OR",
-              style:
-                  TextStyle(fontWeight: FontWeight.w900, color: kPrimaryColor),
+              context.myloc.signup_page_orDivider,
+              style: const TextStyle(
+                  fontWeight: FontWeight.w900, color: kPrimaryColor),
             ),
           ),
-          Expanded(
+          const Expanded(
             child: Divider(
               color: Color(0xffd9d9d9),
               thickness: 2,
