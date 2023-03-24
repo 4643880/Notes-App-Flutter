@@ -1,6 +1,14 @@
 # My Easy Notes 
 
-If you use this app, your data will be secure and we'll store data on the server, you can easily access your data any time from any mobile phone using your login credentials.
+A MyNotes App- Works on Android & iOS! 
+
+## Features
+Modern Notes App with beautiful UI and intuitive Ux. 
+App comes with 7 Screens:
+- Welcome Screen, Login Screen, Signup Screen, Forgot Password Screen, Email Verification Screen
+- Home Screen with App Bar along with the notes in the ListView
+- Notes Editing Screen with the functionality of share your note on differenct platforms like WhatsApp & Facebook etc.
+- Bloc State Management with Cloud Firestore Database & Firebase Authentication
 
 <img src= "https://user-images.githubusercontent.com/81349474/187483397-dd45acea-7f20-4696-9bf5-9ce72ebe3531.jpg" height= 450 />
 <img src= "https://user-images.githubusercontent.com/81349474/187483420-e208ae86-32e3-4f13-89cf-92d51c1a16af.jpg" height= 450 />
